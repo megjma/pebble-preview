@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pebble — Preview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #FAF7F2;
+    --animals: #F5D18F;
+    --ocean: #99CCE9;
+    --weather: #C7B8EB;
+    --earth: #AED9A8;
+    --dinosaurs: #EBAD99;
+    --text: #2C2C2E;
+    --text-secondary: #8E8E93;
+    --card-bg: #FFFFFF;
+    --radius: 24px;
+    --shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  body {
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 393px;
+    max-width: 100vw;
+    min-height: 100vh;
+    margin: 0 auto;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  @media (min-width: 500px) {
+    body { background: #E8E4DF; display: flex; justify-content: center; padding: 20px 0; }
+    .phone-frame {
+      min-height: 852px;
+      height: 852px;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+
+  .screen { display: none; padding: 0 20px 40px; }
+  .screen.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px 8px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .back-btn {
+    background: none; border: none; font-size: 18px; color: var(--text);
+    cursor: pointer; padding: 8px 12px 8px 0; display: flex; align-items: center;
+    gap: 4px; font-family: inherit; font-weight: 600;
+  }
+  .back-btn:hover { opacity: 0.7; }
+
+  /* Home screen */
+  .home-header { text-align: center; padding: 32px 0 24px; }
+  .home-header .logo { font-size: 56px; }
+  .home-header h1 { font-size: 34px; font-weight: 800; margin: 4px 0; }
+  .home-header p { font-size: 18px; color: var(--text-secondary); font-weight: 600; }
+
+  .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .category-card {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    height: 160px; border-radius: var(--radius); border: none; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s; color: white;
+    background-size: cover; background-position: center; overflow: hidden;
+    position: relative; box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .category-card:hover { transform: scale(1.03); }
+  .category-card:active { transform: scale(0.97); }
+  .category-card .emoji { font-size: 48px; position: relative; z-index: 1; }
+  .category-card .cat-label {
+    position: relative; z-index: 1; width: 100%; text-align: center;
+    padding: 10px 0; background: linear-gradient(transparent, rgba(0,0,0,0.55));
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  .category-card .name { font-size: 19px; font-weight: 700; color: white; }
+  .category-card .count { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 600; }
+
+  .cat-animals { background-color: rgba(245,209,143,0.3); }
+  .cat-ocean { background-color: rgba(153,204,233,0.3); }
+  .cat-weather { background-color: rgba(199,184,235,0.3); }
+  .cat-earth { background-color: rgba(174,217,168,0.3); }
+  .cat-dinosaurs { background-color: rgba(235,173,153,0.3); }
+
+  .screen-title { font-size: 34px; font-weight: 800; padding: 8px 0 20px; }
+  .screen-emoji { text-align: center; font-size: 56px; padding: 8px 0; }
+
+  .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .topic-card {
+    background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow: hidden; cursor: pointer; transition: transform 0.2s; color: var(--text);
+  }
+  .topic-card:hover { transform: scale(1.03); }
+  .topic-card:active { transform: scale(0.97); }
+  .topic-card .image-area {
+    height: 120px; display: flex; align-items: center; justify-content: center; font-size: 56px;
+  }
+  .topic-card .label { text-align: center; padding: 10px 8px 14px; font-size: 17px; font-weight: 700; }
+
+  /* Hero & fact */
+  .hero-area {
+    border-radius: var(--radius); height: 240px; display: flex; align-items: center;
+    justify-content: center; font-size: 100px; margin-bottom: 20px;
+  }
+  .fact-text {
+    text-align: center; font-size: 20px; font-weight: 600; line-height: 1.5; padding: 0 8px 20px;
+  }
+  .section-label {
+    font-size: 15px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 4px;
+  }
+
+  /* Exploration grid */
+  .explore-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
+  }
+  .explore-card {
+    background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow);
+    overflow: hidden; cursor: pointer; transition: transform 0.2s; color: var(--text);
+  }
+  .explore-card:hover { transform: scale(1.03); }
+  .explore-card:active { transform: scale(0.97); }
+  .explore-card .explore-img {
+    height: 100px; display: flex; align-items: center; justify-content: center; font-size: 40px;
+  }
+  .explore-card .explore-label {
+    text-align: center; padding: 8px 6px 10px; font-size: 14px; font-weight: 700; line-height: 1.2;
+  }
+
+  /* Related topics */
+  .related-scroll {
+    display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 16px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .related-scroll::-webkit-scrollbar { display: none; }
+  .related-item {
+    flex-shrink: 0; width: 100px; text-align: center; cursor: pointer; color: var(--text);
+  }
+  .related-item:hover { transform: scale(1.05); }
+  .related-item .rel-img {
+    width: 100px; height: 100px; border-radius: 20px; display: flex;
+    align-items: center; justify-content: center; font-size: 40px; margin-bottom: 6px;
+  }
+  .related-item .rel-name { font-size: 14px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="home-header">
+      <div class="logo">🪨</div>
+      <h1>Pebble</h1>
+      <p>What do you want to explore?</p>
+    </div>
+    <div class="category-grid" id="home-categories"></div>
+  </div>
+
+  <!-- CATEGORY SCREEN -->
+  <div class="screen" id="screen-category">
+    <div class="nav-bar">
+      <button class="back-btn" onclick="goHome()">‹ Back</button>
+    </div>
+    <div class="screen-emoji" id="cat-emoji"></div>
+    <h2 class="screen-title" id="cat-title"></h2>
+    <div class="topic-grid" id="cat-topics"></div>
+  </div>
+
+  <!-- TOPIC DETAIL SCREEN -->
+  <div class="screen" id="screen-topic">
+    <div class="nav-bar">
+      <button class="back-btn" onclick="backToCategory()">‹ Back</button>
+    </div>
+    <h2 class="screen-title" id="topic-title"></h2>
+    <div class="hero-area" id="topic-hero"></div>
+    <div class="fact-text" id="topic-fact"></div>
+    <div class="section-label">Explore</div>
+    <div class="explore-grid" id="topic-explore-grid"></div>
+    <div class="section-label" style="margin-top:12px">You Might Also Like</div>
+    <div class="related-scroll" id="topic-related"></div>
+  </div>
+
+  <!-- EXPLORE DETAIL SCREEN (infinite depth) -->
+  <div class="screen" id="screen-explore">
+    <div class="nav-bar">
+      <button class="back-btn" id="explore-back-btn">‹ Back</button>
+    </div>
+    <h2 class="screen-title" id="explore-title"></h2>
+    <div class="hero-area" id="explore-hero"></div>
+    <div class="fact-text" id="explore-fact"></div>
+    <div class="section-label" id="explore-grid-label">Explore</div>
+    <div class="explore-grid" id="explore-grid"></div>
+    <div class="section-label" id="explore-related-label" style="margin-top:12px">You Might Also Like</div>
+    <div class="related-scroll" id="explore-related"></div>
+  </div>
+
+</div>
+
+<script>
+// Seed topic data
+const topics = [
+  { id:"dolphin", title:"Dolphin", category:"Animals", emoji:"🐬", fact:"Dolphins talk to each other by clicking and whistling!", related:["whale","sea-turtle","octopus"] },
+  { id:"bat", title:"Bat", category:"Animals", emoji:"🦇", fact:"Bats are the only mammals that can really fly!", related:["owl","butterfly","cave"] },
+  { id:"elephant", title:"Elephant", category:"Animals", emoji:"🐘", fact:"Elephants are the biggest animals that walk on land!", related:["frog","penguin","forest"] },
+  { id:"penguin", title:"Penguin", category:"Animals", emoji:"🐧", fact:"Penguins are birds but they cannot fly. They are amazing swimmers!", related:["whale","snow","dolphin"] },
+  { id:"butterfly", title:"Butterfly", category:"Animals", emoji:"🦋", fact:"Butterflies start life as caterpillars and then grow beautiful wings!", related:["frog","bat","forest"] },
+  { id:"frog", title:"Frog", category:"Animals", emoji:"🐸", fact:"Frogs can breathe through their skin!", related:["butterfly","waterfall","coral-reef"] },
+  { id:"owl", title:"Owl", category:"Animals", emoji:"🦉", fact:"Owls can turn their heads almost all the way around!", related:["bat","forest","penguin"] },
+  { id:"coral-reef", title:"Coral Reef", category:"Ocean", emoji:"🪸", fact:"Coral reefs are like underwater cities where thousands of fish live!", related:["sea-turtle","octopus","jellyfish"] },
+  { id:"whale", title:"Whale", category:"Ocean", emoji:"🐋", fact:"Blue whales are the biggest animals that have ever lived on Earth!", related:["dolphin","jellyfish","starfish"] },
+  { id:"sea-turtle", title:"Sea Turtle", category:"Ocean", emoji:"🐢", fact:"Sea turtles travel thousands of miles across the ocean!", related:["coral-reef","dolphin","jellyfish"] },
+  { id:"octopus", title:"Octopus", category:"Ocean", emoji:"🐙", fact:"An octopus has eight arms and three hearts!", related:["coral-reef","jellyfish","dolphin"] },
+  { id:"jellyfish", title:"Jellyfish", category:"Ocean", emoji:"🪼", fact:"Jellyfish have no brain, no heart, and no bones!", related:["octopus","starfish","coral-reef"] },
+  { id:"starfish", title:"Starfish", category:"Ocean", emoji:"⭐", fact:"Starfish can grow a brand new arm if one breaks off!", related:["coral-reef","jellyfish","sea-turtle"] },
+  { id:"storm", title:"Storm", category:"Weather", emoji:"⛈️", fact:"Thunder is the sound that lightning makes when it heats the air!", related:["rainbow","lightning","clouds"] },
+  { id:"rainbow", title:"Rainbow", category:"Weather", emoji:"🌈", fact:"A rainbow has seven colours and appears when the sun shines through rain!", related:["storm","clouds","snow"] },
+  { id:"snow", title:"Snow", category:"Weather", emoji:"❄️", fact:"Every single snowflake has a different shape!", related:["penguin","clouds","mountain"] },
+  { id:"tornado", title:"Tornado", category:"Weather", emoji:"🌪️", fact:"A tornado is a spinning tube of air that reaches from a cloud to the ground!", related:["storm","clouds","lightning"] },
+  { id:"clouds", title:"Clouds", category:"Weather", emoji:"☁️", fact:"Clouds are made of billions of tiny water drops floating in the sky!", related:["storm","rainbow","snow"] },
+  { id:"lightning", title:"Lightning", category:"Weather", emoji:"⚡", fact:"Lightning is five times hotter than the surface of the Sun!", related:["storm","tornado","clouds"] },
+  { id:"volcano", title:"Volcano", category:"Earth", emoji:"🌋", fact:"Volcanoes are mountains that can shoot hot melted rock into the sky!", related:["mountain","cave","desert"] },
+  { id:"waterfall", title:"Waterfall", category:"Earth", emoji:"💦", fact:"The tallest waterfall in the world is almost one kilometre high!", related:["rainbow","forest","mountain"] },
+  { id:"desert", title:"Desert", category:"Earth", emoji:"🏜️", fact:"Some deserts are so hot you could cook an egg on the sand!", related:["volcano","cave","mountain"] },
+  { id:"cave", title:"Cave", category:"Earth", emoji:"🕳️", fact:"Some caves are so big you could fit a whole building inside them!", related:["bat","volcano","mountain"] },
+  { id:"mountain", title:"Mountain", category:"Earth", emoji:"🏔️", fact:"The tallest mountain on Earth is so high that planes fly past it!", related:["volcano","snow","cave"] },
+  { id:"forest", title:"Forest", category:"Earth", emoji:"🌲", fact:"Trees in a forest talk to each other through their roots underground!", related:["owl","butterfly","waterfall"] },
+  { id:"t-rex", title:"T-Rex", category:"Dinosaurs", emoji:"🦖", fact:"T-Rex had teeth as long as bananas!", related:["triceratops","stegosaurus","velociraptor"] },
+  { id:"triceratops", title:"Triceratops", category:"Dinosaurs", emoji:"🦕", fact:"Triceratops had three horns on its head and a big bony frill!", related:["t-rex","stegosaurus","brachiosaurus"] },
+  { id:"stegosaurus", title:"Stegosaurus", category:"Dinosaurs", emoji:"🦕", fact:"Stegosaurus had big bony plates on its back and spikes on its tail!", related:["triceratops","brachiosaurus","t-rex"] },
+  { id:"brachiosaurus", title:"Brachiosaurus", category:"Dinosaurs", emoji:"🦕", fact:"Brachiosaurus was so tall it could look over a four storey building!", related:["stegosaurus","triceratops","pteranodon"] },
+  { id:"pteranodon", title:"Pteranodon", category:"Dinosaurs", emoji:"🦅", fact:"Pteranodon could fly and had wings wider than a car is long!", related:["brachiosaurus","velociraptor","t-rex"] },
+  { id:"velociraptor", title:"Velociraptor", category:"Dinosaurs", emoji:"🦖", fact:"Velociraptors were only about the size of a turkey!", related:["t-rex","pteranodon","triceratops"] }
+];
+
+// Exploration data — pre-generated subtopics, image-first content
+const explorations = [
+  {id:"bottlenose-dolphin",title:"Bottlenose Dolphin",fact:"Bottlenose dolphins have big friendly smiles and love to surf on waves!",emoji:"🐬",wikiTitle:"Bottlenose_dolphin",parentID:"dolphin",category:"Animals"},
+  {id:"orca",title:"Orca",fact:"Orcas are the biggest dolphins in the world and have cool black and white patches!",emoji:"🐋",wikiTitle:"Orca",parentID:"dolphin",category:"Animals"},
+  {id:"pink-dolphin",title:"Pink Dolphin",fact:"Pink dolphins live in rivers and really are pink like bubblegum!",emoji:"🩷",wikiTitle:"Amazon_river_dolphin",parentID:"dolphin",category:"Animals"},
+  {id:"spinner-dolphin",title:"Spinner Dolphin",fact:"Spinner dolphins leap out of the water and spin around in the air like a top!",emoji:"🌀",wikiTitle:"Spinner_dolphin",parentID:"dolphin",category:"Animals"},
+  {id:"sea-lion",title:"Sea Lion",fact:"Sea lions bark like dogs and can walk on land using their big flippers!",emoji:"🦭",wikiTitle:"Sea_lion",parentID:"dolphin",category:"Animals"},
+  {id:"dolphin-ocean",title:"Tropical Ocean",fact:"Dolphins love warm tropical waters where the sea is bright blue!",emoji:"🌊",wikiTitle:"Tropical_marine_climate",parentID:"dolphin",category:"Animals"},
+  {id:"fruit-bat",title:"Fruit Bat",fact:"Fruit bats have big cute eyes and love to eat juicy mangoes!",emoji:"🦇",wikiTitle:"Megabat",parentID:"bat",category:"Animals"},
+  {id:"vampire-bat",title:"Vampire Bat",fact:"Vampire bats are tiny and no bigger than your thumb!",emoji:"🧛",wikiTitle:"Vampire_bat",parentID:"bat",category:"Animals"},
+  {id:"flying-fox",title:"Flying Fox",fact:"Flying foxes are the biggest bats in the world with wings wider than you!",emoji:"🦊",wikiTitle:"Pteropus",parentID:"bat",category:"Animals"},
+  {id:"bat-moth",title:"Moth",fact:"Moths fly at night and bats love to chase and catch them!",emoji:"🦋",wikiTitle:"Moth",parentID:"bat",category:"Animals"},
+  {id:"horseshoe-bat",title:"Horseshoe Bat",fact:"Horseshoe bats have funny noses shaped like horseshoes to help them hear!",emoji:"🐴",wikiTitle:"Horseshoe_bat",parentID:"bat",category:"Animals"},
+  {id:"bat-cave",title:"Bat Cave",fact:"Millions of bats can live together in one big dark cave!",emoji:"🕳️",wikiTitle:"Bat_cave",parentID:"bat",category:"Animals"},
+  {id:"african-elephant",title:"African Elephant",fact:"African elephants have huge floppy ears shaped like the map of Africa!",emoji:"🐘",wikiTitle:"African_elephant",parentID:"elephant",category:"Animals"},
+  {id:"asian-elephant",title:"Asian Elephant",fact:"Asian elephants have smaller ears and some have cute pink spots!",emoji:"🐘",wikiTitle:"Asian_elephant",parentID:"elephant",category:"Animals"},
+  {id:"baby-elephant",title:"Baby Elephant",fact:"A baby elephant can stand up and walk just one hour after being born!",emoji:"🍼",wikiTitle:"Elephant",parentID:"elephant",category:"Animals"},
+  {id:"woolly-mammoth",title:"Woolly Mammoth",fact:"Woolly mammoths were huge hairy elephants that lived in the ice age!",emoji:"🦣",wikiTitle:"Woolly_mammoth",parentID:"elephant",category:"Animals"},
+  {id:"elephant-savanna",title:"Savanna",fact:"Elephants roam across big grassy plains called savannas in Africa!",emoji:"🌾",wikiTitle:"Savanna",parentID:"elephant",category:"Animals"},
+  {id:"rhinoceros",title:"Rhinoceros",fact:"Rhinos have thick armour-like skin and big horns on their nose!",emoji:"🦏",wikiTitle:"Rhinoceros",parentID:"elephant",category:"Animals"},
+  {id:"emperor-penguin",title:"Emperor Penguin",fact:"Emperor penguins are the tallest penguins and live where it is super cold!",emoji:"🐧",wikiTitle:"Emperor_penguin",parentID:"penguin",category:"Animals"},
+  {id:"rockhopper-penguin",title:"Rockhopper Penguin",fact:"Rockhopper penguins have spiky yellow feathers on their heads like a crown!",emoji:"👑",wikiTitle:"Rockhopper_penguin",parentID:"penguin",category:"Animals"},
+  {id:"little-penguin",title:"Little Blue Penguin",fact:"Little blue penguins are the smallest penguins and only as tall as a ruler!",emoji:"💙",wikiTitle:"Little_penguin",parentID:"penguin",category:"Animals"},
+  {id:"adelie-penguin",title:"Adélie Penguin",fact:"Adélie penguins have a white ring around their eyes and waddle so fast!",emoji:"🐧",wikiTitle:"Adélie_penguin",parentID:"penguin",category:"Animals"},
+  {id:"penguin-antarctica",title:"Antarctica",fact:"Antarctica is the coldest place on Earth and it is covered in ice!",emoji:"🧊",wikiTitle:"Antarctica",parentID:"penguin",category:"Animals"},
+  {id:"penguin-iceberg",title:"Iceberg",fact:"Icebergs are giant chunks of ice that float in the freezing ocean!",emoji:"🏔️",wikiTitle:"Iceberg",parentID:"penguin",category:"Animals"},
+  {id:"monarch-butterfly",title:"Monarch Butterfly",fact:"Monarch butterflies fly thousands of miles to find warm sunshine!",emoji:"🦋",wikiTitle:"Monarch_butterfly",parentID:"butterfly",category:"Animals"},
+  {id:"caterpillar",title:"Caterpillar",fact:"Caterpillars eat and eat until they are big enough to become a butterfly!",emoji:"🐛",wikiTitle:"Caterpillar",parentID:"butterfly",category:"Animals"},
+  {id:"blue-morpho",title:"Blue Morpho",fact:"Blue morpho butterflies have the most brilliant shiny blue wings!",emoji:"💎",wikiTitle:"Morpho_menelaus",parentID:"butterfly",category:"Animals"},
+  {id:"butterfly-flower",title:"Sunflower",fact:"Butterflies love to drink sweet nectar from big bright sunflowers!",emoji:"🌻",wikiTitle:"Sunflower",parentID:"butterfly",category:"Animals"},
+  {id:"swallowtail",title:"Swallowtail Butterfly",fact:"Swallowtail butterflies have beautiful long tails on their wings!",emoji:"🦋",wikiTitle:"Swallowtail_butterfly",parentID:"butterfly",category:"Animals"},
+  {id:"atlas-moth",title:"Atlas Moth",fact:"The atlas moth is one of the biggest moths with wings as wide as a dinner plate!",emoji:"🦋",wikiTitle:"Attacus_atlas",parentID:"butterfly",category:"Animals"},
+  {id:"red-eyed-tree-frog",title:"Red-Eyed Tree Frog",fact:"Red-eyed tree frogs have bright red eyes and sticky green toes!",emoji:"🐸",wikiTitle:"Red-eyed_tree_frog",parentID:"frog",category:"Animals"},
+  {id:"poison-dart-frog",title:"Poison Dart Frog",fact:"Poison dart frogs are tiny but come in the most amazing bright colours!",emoji:"🎨",wikiTitle:"Poison_dart_frog",parentID:"frog",category:"Animals"},
+  {id:"tadpole",title:"Tadpole",fact:"Tadpoles look like tiny fish but they slowly grow legs and become frogs!",emoji:"💧",wikiTitle:"Tadpole",parentID:"frog",category:"Animals"},
+  {id:"lily-pad",title:"Lily Pad",fact:"Frogs love to sit on lily pads floating on ponds in the sunshine!",emoji:"🪷",wikiTitle:"Nelumbo_nucifera",parentID:"frog",category:"Animals"},
+  {id:"glass-frog",title:"Glass Frog",fact:"Glass frogs have see-through tummies so you can see their heart beating!",emoji:"💚",wikiTitle:"Glass_frog",parentID:"frog",category:"Animals"},
+  {id:"frog-rainforest",title:"Rainforest",fact:"Rainforests are warm and wet with so many colourful frogs hiding in the trees!",emoji:"🌴",wikiTitle:"Tropical_rainforest",parentID:"frog",category:"Animals"},
+  {id:"barn-owl",title:"Barn Owl",fact:"Barn owls have heart-shaped faces and can hear a tiny mouse from far away!",emoji:"🦉",wikiTitle:"Barn_owl",parentID:"owl",category:"Animals"},
+  {id:"snowy-owl",title:"Snowy Owl",fact:"Snowy owls are white as snow and live in the freezing Arctic!",emoji:"⬜",wikiTitle:"Snowy_owl",parentID:"owl",category:"Animals"},
+  {id:"great-horned-owl",title:"Great Horned Owl",fact:"Great horned owls have feathery tufts on their heads that look like horns!",emoji:"🦉",wikiTitle:"Great_horned_owl",parentID:"owl",category:"Animals"},
+  {id:"burrowing-owl",title:"Burrowing Owl",fact:"Burrowing owls live underground in little holes instead of in trees!",emoji:"🕳️",wikiTitle:"Burrowing_owl",parentID:"owl",category:"Animals"},
+  {id:"eagle-owl",title:"Eagle-Owl",fact:"Eagle-owls are the biggest owls in the world with bright orange eyes!",emoji:"🦅",wikiTitle:"Eagle-owl",parentID:"owl",category:"Animals"},
+  {id:"owl-mouse",title:"Field Mouse",fact:"Mice are a favourite snack for owls who hunt them at night!",emoji:"🐭",wikiTitle:"Field_mouse",parentID:"owl",category:"Animals"},
+  {id:"clownfish",title:"Clownfish",fact:"Clownfish live inside stinging sea anemones where nothing can get them!",emoji:"🐠",wikiTitle:"Clownfish",parentID:"coral-reef",category:"Ocean"},
+  {id:"sea-anemone",title:"Sea Anemone",fact:"Sea anemones look like flowers but they are actually animals!",emoji:"🌺",wikiTitle:"Sea_anemone",parentID:"coral-reef",category:"Ocean"},
+  {id:"parrotfish",title:"Parrotfish",fact:"Parrotfish have beaks like parrots and they munch on coral!",emoji:"🐟",wikiTitle:"Parrotfish",parentID:"coral-reef",category:"Ocean"},
+  {id:"great-barrier-reef",title:"Great Barrier Reef",fact:"The Great Barrier Reef is so big you can see it from space!",emoji:"🌏",wikiTitle:"Great_Barrier_Reef",parentID:"coral-reef",category:"Ocean"},
+  {id:"sea-sponge",title:"Sea Sponge",fact:"Sea sponges are animals that stay in one spot and filter water for food!",emoji:"🧽",wikiTitle:"Sponge",parentID:"coral-reef",category:"Ocean"},
+  {id:"manta-ray",title:"Manta Ray",fact:"Manta rays glide through the water like giant underwater birds!",emoji:"🦈",wikiTitle:"Manta_ray",parentID:"coral-reef",category:"Ocean"},
+  {id:"blue-whale",title:"Blue Whale",fact:"A blue whale's heart is as big as a small car!",emoji:"💙",wikiTitle:"Blue_whale",parentID:"whale",category:"Ocean"},
+  {id:"humpback-whale",title:"Humpback Whale",fact:"Humpback whales sing beautiful songs that travel across the whole ocean!",emoji:"🎵",wikiTitle:"Humpback_whale",parentID:"whale",category:"Ocean"},
+  {id:"narwhal",title:"Narwhal",fact:"Narwhals have a long twisty tusk like a real-life unicorn of the sea!",emoji:"🦄",wikiTitle:"Narwhal",parentID:"whale",category:"Ocean"},
+  {id:"sperm-whale",title:"Sperm Whale",fact:"Sperm whales can hold their breath and dive deeper than any other whale!",emoji:"🐋",wikiTitle:"Sperm_whale",parentID:"whale",category:"Ocean"},
+  {id:"beluga-whale",title:"Beluga Whale",fact:"Beluga whales are all white and they can move their face to make expressions!",emoji:"⬜",wikiTitle:"Beluga_whale",parentID:"whale",category:"Ocean"},
+  {id:"gray-whale",title:"Gray Whale",fact:"Gray whales travel further than any other mammal, swimming pole to pole!",emoji:"🐳",wikiTitle:"Gray_whale",parentID:"whale",category:"Ocean"},
+  {id:"green-sea-turtle",title:"Green Sea Turtle",fact:"Green sea turtles eat seagrass which turns their fat green!",emoji:"🐢",wikiTitle:"Green_sea_turtle",parentID:"sea-turtle",category:"Ocean"},
+  {id:"leatherback-turtle",title:"Leatherback Turtle",fact:"Leatherback turtles are the biggest turtles and can dive super deep!",emoji:"🐢",wikiTitle:"Leatherback_sea_turtle",parentID:"sea-turtle",category:"Ocean"},
+  {id:"hawksbill-turtle",title:"Hawksbill Turtle",fact:"Hawksbill turtles have beautiful patterned shells in brown and gold!",emoji:"🐢",wikiTitle:"Hawksbill_sea_turtle",parentID:"sea-turtle",category:"Ocean"},
+  {id:"loggerhead-turtle",title:"Loggerhead Turtle",fact:"Loggerhead turtles have big strong heads that help them crunch up crab shells!",emoji:"🐢",wikiTitle:"Loggerhead_sea_turtle",parentID:"sea-turtle",category:"Ocean"},
+  {id:"baby-sea-turtle",title:"Baby Sea Turtle",fact:"Tiny baby turtles race across the sand to reach the ocean for the first time!",emoji:"🐣",wikiTitle:"Sea_turtle",parentID:"sea-turtle",category:"Ocean"},
+  {id:"galapagos-tortoise",title:"Galápagos Tortoise",fact:"Galápagos tortoises are the biggest tortoises and live for 150 years!",emoji:"🐢",wikiTitle:"Galápagos_tortoise",parentID:"sea-turtle",category:"Ocean"},
+  {id:"giant-pacific-octopus",title:"Giant Pacific Octopus",fact:"Giant Pacific octopuses can be as wide as a car with their arms stretched out!",emoji:"🐙",wikiTitle:"Giant_Pacific_octopus",parentID:"octopus",category:"Ocean"},
+  {id:"blue-ringed-octopus",title:"Blue-Ringed Octopus",fact:"Tiny blue-ringed octopuses flash bright blue rings when they are surprised!",emoji:"💍",wikiTitle:"Blue-ringed_octopus",parentID:"octopus",category:"Ocean"},
+  {id:"mimic-octopus",title:"Mimic Octopus",fact:"Mimic octopuses can copy the shape of other animals like fish and sea snakes!",emoji:"🎭",wikiTitle:"Mimic_octopus",parentID:"octopus",category:"Ocean"},
+  {id:"dumbo-octopus",title:"Dumbo Octopus",fact:"Dumbo octopuses have cute little ear-like fins and live in the deep deep sea!",emoji:"🐘",wikiTitle:"Grimpoteuthis",parentID:"octopus",category:"Ocean"},
+  {id:"coconut-octopus",title:"Coconut Octopus",fact:"Coconut octopuses carry coconut shells around and hide inside them like a house!",emoji:"🥥",wikiTitle:"Amphioctopus_marginatus",parentID:"octopus",category:"Ocean"},
+  {id:"blanket-octopus",title:"Blanket Octopus",fact:"Blanket octopuses trail a beautiful flowing cape behind them like a superhero!",emoji:"🦸",wikiTitle:"Blanket_octopus",parentID:"octopus",category:"Ocean"},
+  {id:"moon-jellyfish",title:"Moon Jellyfish",fact:"Moon jellyfish are see-through and glow like little moons in the water!",emoji:"🌙",wikiTitle:"Moon_jellyfish",parentID:"jellyfish",category:"Ocean"},
+  {id:"box-jellyfish",title:"Box Jellyfish",fact:"Box jellyfish have a square-shaped head and can swim instead of just floating!",emoji:"📦",wikiTitle:"Box_jellyfish",parentID:"jellyfish",category:"Ocean"},
+  {id:"lions-mane-jellyfish",title:"Lion's Mane Jellyfish",fact:"The lion's mane jellyfish is the biggest jellyfish and can be longer than a blue whale!",emoji:"🦁",wikiTitle:"Lion's_mane_jellyfish",parentID:"jellyfish",category:"Ocean"},
+  {id:"crystal-jellyfish",title:"Crystal Jellyfish",fact:"Crystal jellyfish can glow bright green in the dark like a magical lamp!",emoji:"✨",wikiTitle:"Aequorea_victoria",parentID:"jellyfish",category:"Ocean"},
+  {id:"fried-egg-jellyfish",title:"Fried Egg Jellyfish",fact:"Fried egg jellyfish look exactly like a sunny side up egg floating in the water!",emoji:"🍳",wikiTitle:"Cotylorhiza_tuberculata",parentID:"jellyfish",category:"Ocean"},
+  {id:"man-o-war",title:"Portuguese Man o' War",fact:"A man o' war looks like a jellyfish but is actually thousands of tiny animals together!",emoji:"🎈",wikiTitle:"Portuguese_man_o'_war",parentID:"jellyfish",category:"Ocean"},
+  {id:"sea-star",title:"Sea Star",fact:"Sea stars come in red, orange, purple and even blue colours!",emoji:"⭐",wikiTitle:"Starfish",parentID:"starfish",category:"Ocean"},
+  {id:"starfish-tide-pool",title:"Tide Pool",fact:"Tide pools are little puddles on rocks where you can find starfish!",emoji:"🪨",wikiTitle:"Tide_pool",parentID:"starfish",category:"Ocean"},
+  {id:"sea-urchin",title:"Sea Urchin",fact:"Sea urchins are round and covered in spiky spines like a pincushion!",emoji:"🟣",wikiTitle:"Sea_urchin",parentID:"starfish",category:"Ocean"},
+  {id:"sea-cucumber",title:"Sea Cucumber",fact:"Sea cucumbers are squishy animals that look like big underwater pickles!",emoji:"🥒",wikiTitle:"Sea_cucumber",parentID:"starfish",category:"Ocean"},
+  {id:"crown-of-thorns",title:"Crown-of-Thorns Starfish",fact:"The crown-of-thorns starfish is covered in sharp spines and can have 20 arms!",emoji:"👑",wikiTitle:"Crown-of-thorns_starfish",parentID:"starfish",category:"Ocean"},
+  {id:"sand-dollar",title:"Sand Dollar",fact:"Sand dollars are flat and round with a beautiful star pattern on top!",emoji:"🪙",wikiTitle:"Sand_dollar",parentID:"starfish",category:"Ocean"},
+  {id:"thunderstorm",title:"Thunderstorm",fact:"Thunderstorms can have thousands of lightning bolts in just one hour!",emoji:"⛈️",wikiTitle:"Thunderstorm",parentID:"storm",category:"Weather"},
+  {id:"hail",title:"Hailstone",fact:"Hailstones are balls of ice that fall from the sky and can be as big as golf balls!",emoji:"🧊",wikiTitle:"Hail",parentID:"storm",category:"Weather"},
+  {id:"storm-cloud",title:"Cumulonimbus",fact:"Storm clouds can be taller than a mountain and are full of rain!",emoji:"🌩️",wikiTitle:"Cumulonimbus_cloud",parentID:"storm",category:"Weather"},
+  {id:"hurricane",title:"Hurricane",fact:"Hurricanes are giant spinning storms that can be as wide as a whole country!",emoji:"🌀",wikiTitle:"Hurricane",parentID:"storm",category:"Weather"},
+  {id:"storm-rain",title:"Rain",fact:"Every raindrop starts as a tiny speck of dust way up in a cloud!",emoji:"🌧️",wikiTitle:"Rain",parentID:"storm",category:"Weather"},
+  {id:"monsoon",title:"Monsoon",fact:"Monsoons bring so much rain that rivers overflow and everything turns green!",emoji:"🌊",wikiTitle:"Monsoon",parentID:"storm",category:"Weather"},
+  {id:"double-rainbow",title:"Double Rainbow",fact:"A double rainbow has the colours backwards on the outside one!",emoji:"🌈",wikiTitle:"Rainbow",parentID:"rainbow",category:"Weather"},
+  {id:"rainbow-prism",title:"Prism",fact:"A glass prism can split white light into all the rainbow colours!",emoji:"🔺",wikiTitle:"Prism_(optics)",parentID:"rainbow",category:"Weather"},
+  {id:"northern-lights",title:"Northern Lights",fact:"The northern lights are magical curtains of green and purple light dancing in the sky!",emoji:"🌌",wikiTitle:"Aurora_borealis",parentID:"rainbow",category:"Weather"},
+  {id:"sunrise",title:"Sunrise",fact:"Sunrises paint the sky in pink, orange, and gold every single morning!",emoji:"🌅",wikiTitle:"Sunrise",parentID:"rainbow",category:"Weather"},
+  {id:"soap-bubble",title:"Soap Bubble",fact:"Soap bubbles have tiny swirling rainbows on their surface!",emoji:"🫧",wikiTitle:"Soap_bubble",parentID:"rainbow",category:"Weather"},
+  {id:"rainbow-waterfall",title:"Waterfall Rainbow",fact:"You can see rainbows in the mist of waterfalls on sunny days!",emoji:"💦",wikiTitle:"Waterfall",parentID:"rainbow",category:"Weather"},
+  {id:"snowflake",title:"Snowflake",fact:"Every single snowflake has six sides but no two look exactly the same!",emoji:"❄️",wikiTitle:"Snowflake",parentID:"snow",category:"Weather"},
+  {id:"snow-avalanche",title:"Avalanche",fact:"An avalanche is when a huge wall of snow slides down a mountain very fast!",emoji:"🏔️",wikiTitle:"Avalanche",parentID:"snow",category:"Weather"},
+  {id:"snow-igloo",title:"Igloo",fact:"Igloos are houses made of snow blocks and they are warm inside!",emoji:"🏠",wikiTitle:"Igloo",parentID:"snow",category:"Weather"},
+  {id:"snow-arctic-fox",title:"Arctic Fox",fact:"Arctic foxes turn white in winter to hide in the snow!",emoji:"🦊",wikiTitle:"Arctic_fox",parentID:"snow",category:"Weather"},
+  {id:"snow-glacier",title:"Glacier",fact:"Glaciers are giant rivers of ice that move very very slowly!",emoji:"🧊",wikiTitle:"Glacier",parentID:"snow",category:"Weather"},
+  {id:"snow-polar-bear",title:"Polar Bear",fact:"Polar bears have black skin under their white fur to soak up the sun!",emoji:"🐻‍❄️",wikiTitle:"Polar_bear",parentID:"snow",category:"Weather"},
+  {id:"tornado-funnel",title:"Funnel Cloud",fact:"A funnel cloud is a spinning tube that reaches down from a storm cloud!",emoji:"🌪️",wikiTitle:"Funnel_cloud",parentID:"tornado",category:"Weather"},
+  {id:"tornado-alley",title:"Tornado Alley",fact:"Tornado Alley is a part of America where lots of tornadoes happen!",emoji:"🗺️",wikiTitle:"Tornado_Alley",parentID:"tornado",category:"Weather"},
+  {id:"tornado-dust-devil",title:"Dust Devil",fact:"Dust devils are tiny spinning winds that pick up sand and leaves!",emoji:"🌀",wikiTitle:"Dust_devil",parentID:"tornado",category:"Weather"},
+  {id:"tornado-storm-chaser",title:"Storm Chasing",fact:"Storm chasers drive after tornadoes to learn how they work!",emoji:"🚗",wikiTitle:"Storm_chasing",parentID:"tornado",category:"Weather"},
+  {id:"tornado-supercell",title:"Supercell",fact:"Supercells are giant spinning thunderstorms that can make tornadoes!",emoji:"🌩️",wikiTitle:"Supercell",parentID:"tornado",category:"Weather"},
+  {id:"tornado-waterspout",title:"Waterspout",fact:"A waterspout is a tornado that happens over the water!",emoji:"🌊",wikiTitle:"Waterspout",parentID:"tornado",category:"Weather"},
+  {id:"cumulus-cloud",title:"Cumulus Cloud",fact:"Fluffy cumulus clouds look like big cotton balls floating in the sky!",emoji:"☁️",wikiTitle:"Cumulus_cloud",parentID:"clouds",category:"Weather"},
+  {id:"cirrus-cloud",title:"Cirrus Cloud",fact:"Cirrus clouds are thin wispy clouds way up high made of tiny ice crystals!",emoji:"🪶",wikiTitle:"Cirrus_cloud",parentID:"clouds",category:"Weather"},
+  {id:"fog",title:"Fog",fact:"Fog is actually a cloud that sits on the ground so you can walk through it!",emoji:"🌫️",wikiTitle:"Fog",parentID:"clouds",category:"Weather"},
+  {id:"lenticular-cloud",title:"Lenticular Cloud",fact:"Lenticular clouds look like flying saucers hovering over mountains!",emoji:"🛸",wikiTitle:"Lenticular_cloud",parentID:"clouds",category:"Weather"},
+  {id:"cloud-sunset",title:"Sunset",fact:"Clouds turn pink and orange and purple when the sun goes down!",emoji:"🌅",wikiTitle:"Sunset",parentID:"clouds",category:"Weather"},
+  {id:"cloud-contrail",title:"Contrail",fact:"Aeroplanes leave white lines in the sky that are actually tiny cloud trails!",emoji:"✈️",wikiTitle:"Contrail",parentID:"clouds",category:"Weather"},
+  {id:"ball-lightning",title:"Ball Lightning",fact:"Ball lightning is a rare glowing ball of light that floats through the air!",emoji:"🔮",wikiTitle:"Ball_lightning",parentID:"lightning",category:"Weather"},
+  {id:"volcanic-lightning",title:"Volcanic Lightning",fact:"Lightning can appear inside a volcanic eruption making the most amazing photos!",emoji:"🌋",wikiTitle:"Dirty_thunderstorm",parentID:"lightning",category:"Weather"},
+  {id:"lightning-thunder",title:"Thunder",fact:"Thunder is the boom you hear when lightning heats the air super fast!",emoji:"💥",wikiTitle:"Thunder",parentID:"lightning",category:"Weather"},
+  {id:"lightning-bolt",title:"Lightning Bolt",fact:"A lightning bolt is five times hotter than the surface of the Sun!",emoji:"⚡",wikiTitle:"Lightning",parentID:"lightning",category:"Weather"},
+  {id:"fulgurite",title:"Fulgurite",fact:"When lightning hits sand it melts it into beautiful glass tubes called fulgurites!",emoji:"✨",wikiTitle:"Fulgurite",parentID:"lightning",category:"Weather"},
+  {id:"lightning-aurora",title:"Aurora",fact:"Auroras are magical colourful lights that dance across the night sky!",emoji:"🌌",wikiTitle:"Aurora_(astronomy)",parentID:"lightning",category:"Weather"},
+  {id:"lava",title:"Lava",fact:"Lava is so hot it glows bright orange and can melt almost anything!",emoji:"🔴",wikiTitle:"Lava",parentID:"volcano",category:"Earth"},
+  {id:"mount-vesuvius",title:"Mount Vesuvius",fact:"Mount Vesuvius erupted a long time ago and buried a whole town in ash!",emoji:"🌋",wikiTitle:"Mount_Vesuvius",parentID:"volcano",category:"Earth"},
+  {id:"volcano-hawaii",title:"Hawaii",fact:"Hawaii was made by underwater volcanoes that grew up from the ocean floor!",emoji:"🏝️",wikiTitle:"Hawaii",parentID:"volcano",category:"Earth"},
+  {id:"volcano-geyser",title:"Geyser",fact:"Geysers shoot hot water and steam up into the air like a fountain!",emoji:"♨️",wikiTitle:"Geyser",parentID:"volcano",category:"Earth"},
+  {id:"volcano-obsidian",title:"Obsidian",fact:"Obsidian is shiny black glass made when lava cools down really fast!",emoji:"🖤",wikiTitle:"Obsidian",parentID:"volcano",category:"Earth"},
+  {id:"mount-fuji",title:"Mount Fuji",fact:"Mount Fuji is the most famous volcano in Japan and has a beautiful snowy top!",emoji:"🗻",wikiTitle:"Mount_Fuji",parentID:"volcano",category:"Earth"},
+  {id:"niagara-falls",title:"Niagara Falls",fact:"Niagara Falls is so powerful you can hear it roaring from far away!",emoji:"💦",wikiTitle:"Niagara_Falls",parentID:"waterfall",category:"Earth"},
+  {id:"angel-falls",title:"Angel Falls",fact:"Angel Falls is the tallest waterfall in the world!",emoji:"🏞️",wikiTitle:"Angel_Falls",parentID:"waterfall",category:"Earth"},
+  {id:"victoria-falls",title:"Victoria Falls",fact:"Victoria Falls makes so much mist that you can see it from twenty miles away!",emoji:"🌊",wikiTitle:"Victoria_Falls",parentID:"waterfall",category:"Earth"},
+  {id:"iguazu-falls",title:"Iguazu Falls",fact:"Iguazu Falls has over 270 waterfalls all next to each other in a huge curve!",emoji:"💦",wikiTitle:"Iguazu_Falls",parentID:"waterfall",category:"Earth"},
+  {id:"waterfall-river",title:"River",fact:"Rivers carry water from mountains all the way down to the sea!",emoji:"🏞️",wikiTitle:"River",parentID:"waterfall",category:"Earth"},
+  {id:"waterfall-moss",title:"Moss",fact:"Soft green moss loves the misty spray near waterfalls!",emoji:"🌿",wikiTitle:"Moss",parentID:"waterfall",category:"Earth"},
+  {id:"sahara-desert",title:"Sahara Desert",fact:"The Sahara is the biggest hot desert and is almost as big as a whole country!",emoji:"🏜️",wikiTitle:"Sahara",parentID:"desert",category:"Earth"},
+  {id:"desert-camel",title:"Camel",fact:"Camels store fat in their humps so they can go for days without eating!",emoji:"🐫",wikiTitle:"Camel",parentID:"desert",category:"Earth"},
+  {id:"desert-oasis",title:"Oasis",fact:"An oasis is a patch of green with water and trees in the middle of a desert!",emoji:"🌴",wikiTitle:"Oasis",parentID:"desert",category:"Earth"},
+  {id:"desert-sand-dune",title:"Sand Dune",fact:"Sand dunes are big hills of sand that slowly move with the wind!",emoji:"🏖️",wikiTitle:"Dune",parentID:"desert",category:"Earth"},
+  {id:"desert-cactus",title:"Cactus",fact:"Cactuses store water inside their fat stems and have prickly spines!",emoji:"🌵",wikiTitle:"Cactus",parentID:"desert",category:"Earth"},
+  {id:"desert-lizard",title:"Lizard",fact:"Desert lizards bask on hot rocks in the sun to warm up their bodies!",emoji:"🦎",wikiTitle:"Lizard",parentID:"desert",category:"Earth"},
+  {id:"stalactite",title:"Stalactite",fact:"Stalactites are pointy rocks that hang from cave ceilings like icicles!",emoji:"🔻",wikiTitle:"Stalactite",parentID:"cave",category:"Earth"},
+  {id:"stalagmite",title:"Stalagmite",fact:"Stalagmites grow up from the cave floor very slowly over thousands of years!",emoji:"🔺",wikiTitle:"Stalagmite",parentID:"cave",category:"Earth"},
+  {id:"glow-worm",title:"Glow-worm",fact:"Glow-worms make caves sparkle like a sky full of tiny blue stars!",emoji:"✨",wikiTitle:"Arachnocampa",parentID:"cave",category:"Earth"},
+  {id:"cave-crystal",title:"Crystal Cave",fact:"Some caves have giant crystals that are bigger than people!",emoji:"💎",wikiTitle:"Cave_of_the_Crystals",parentID:"cave",category:"Earth"},
+  {id:"cave-underground-river",title:"Underground River",fact:"Rivers can flow through dark caves deep under the ground!",emoji:"🌊",wikiTitle:"Subterranean_river",parentID:"cave",category:"Earth"},
+  {id:"cave-cenote",title:"Cenote",fact:"Cenotes are magical swimming holes in caves with crystal clear blue water!",emoji:"💧",wikiTitle:"Cenote",parentID:"cave",category:"Earth"},
+  {id:"mount-everest",title:"Mount Everest",fact:"Mount Everest is the tallest mountain on Earth and still grows taller each year!",emoji:"🏔️",wikiTitle:"Mount_Everest",parentID:"mountain",category:"Earth"},
+  {id:"mountain-goat",title:"Mountain Goat",fact:"Mountain goats can climb up steep rocky cliffs that look impossible!",emoji:"🐐",wikiTitle:"Mountain_goat",parentID:"mountain",category:"Earth"},
+  {id:"mountain-snow-leopard",title:"Snow Leopard",fact:"Snow leopards have thick furry tails they wrap around themselves to stay warm!",emoji:"🐆",wikiTitle:"Snow_leopard",parentID:"mountain",category:"Earth"},
+  {id:"mountain-alpine-meadow",title:"Alpine Meadow",fact:"Alpine meadows are fields of wildflowers on mountainsides that bloom in summer!",emoji:"🌼",wikiTitle:"Alpine_meadow",parentID:"mountain",category:"Earth"},
+  {id:"matterhorn",title:"Matterhorn",fact:"The Matterhorn is one of the most famous mountains with its pointy triangle peak!",emoji:"🏔️",wikiTitle:"Matterhorn",parentID:"mountain",category:"Earth"},
+  {id:"mountain-eagle",title:"Golden Eagle",fact:"Golden eagles soar above mountain peaks with wings wider than you are tall!",emoji:"🦅",wikiTitle:"Golden_eagle",parentID:"mountain",category:"Earth"},
+  {id:"redwood-tree",title:"Redwood Tree",fact:"Redwood trees are the tallest trees on Earth and can live for thousands of years!",emoji:"🌲",wikiTitle:"Sequoia_sempervirens",parentID:"forest",category:"Earth"},
+  {id:"forest-mushroom",title:"Mushroom",fact:"Mushrooms pop up on the forest floor and come in all shapes and colours!",emoji:"🍄",wikiTitle:"Mushroom",parentID:"forest",category:"Earth"},
+  {id:"forest-deer",title:"Deer",fact:"Deer have big beautiful antlers that fall off and grow back every year!",emoji:"🦌",wikiTitle:"Deer",parentID:"forest",category:"Earth"},
+  {id:"forest-woodpecker",title:"Woodpecker",fact:"Woodpeckers tap on trees with their beaks to find yummy bugs inside!",emoji:"🐦",wikiTitle:"Woodpecker",parentID:"forest",category:"Earth"},
+  {id:"forest-fern",title:"Fern",fact:"Ferns have been growing on Earth since before the dinosaurs!",emoji:"🌿",wikiTitle:"Fern",parentID:"forest",category:"Earth"},
+  {id:"forest-squirrel",title:"Squirrel",fact:"Squirrels bury nuts in the ground and remember where thousands of them are!",emoji:"🐿️",wikiTitle:"Squirrel",parentID:"forest",category:"Earth"},
+  {id:"trex-fossil",title:"Dinosaur Fossil",fact:"Fossils are dinosaur bones that turned to stone over millions of years!",emoji:"🦴",wikiTitle:"Fossil",parentID:"t-rex",category:"Dinosaurs"},
+  {id:"trex-sue",title:"Sue the T-Rex",fact:"Sue is the biggest T-Rex fossil ever found and lives in a museum in Chicago!",emoji:"🏛️",wikiTitle:"Sue_(dinosaur)",parentID:"t-rex",category:"Dinosaurs"},
+  {id:"trex-feather",title:"Feathered Dinosaur",fact:"Scientists think T-Rex babies might have been covered in fluffy feathers!",emoji:"🪶",wikiTitle:"Feathered_dinosaur",parentID:"t-rex",category:"Dinosaurs"},
+  {id:"albertosaurus",title:"Albertosaurus",fact:"Albertosaurus was a smaller cousin of T-Rex that hunted in packs!",emoji:"🦖",wikiTitle:"Albertosaurus",parentID:"t-rex",category:"Dinosaurs"},
+  {id:"spinosaurus",title:"Spinosaurus",fact:"Spinosaurus had a huge sail on its back and could swim like a crocodile!",emoji:"🦖",wikiTitle:"Spinosaurus",parentID:"t-rex",category:"Dinosaurs"},
+  {id:"carnotaurus",title:"Carnotaurus",fact:"Carnotaurus had two horns above its eyes like a bull and ran super fast!",emoji:"🐂",wikiTitle:"Carnotaurus",parentID:"t-rex",category:"Dinosaurs"},
+  {id:"styracosaurus",title:"Styracosaurus",fact:"Styracosaurus had amazing long spikes sticking out from its frill like a crown!",emoji:"👑",wikiTitle:"Styracosaurus",parentID:"triceratops",category:"Dinosaurs"},
+  {id:"protoceratops",title:"Protoceratops",fact:"Protoceratops was a small dinosaur with a cute beak and a little frill!",emoji:"🦕",wikiTitle:"Protoceratops",parentID:"triceratops",category:"Dinosaurs"},
+  {id:"pachyrhinosaurus",title:"Pachyrhinosaurus",fact:"Pachyrhinosaurus had a big bumpy boss on its nose instead of a horn!",emoji:"🦏",wikiTitle:"Pachyrhinosaurus",parentID:"triceratops",category:"Dinosaurs"},
+  {id:"torosaurus",title:"Torosaurus",fact:"Torosaurus had the biggest skull of any land animal that ever lived!",emoji:"🦕",wikiTitle:"Torosaurus",parentID:"triceratops",category:"Dinosaurs"},
+  {id:"dinosaur-egg",title:"Dinosaur Egg",fact:"Dinosaur eggs could be round or long and some were as big as a football!",emoji:"🥚",wikiTitle:"Dinosaur_egg",parentID:"triceratops",category:"Dinosaurs"},
+  {id:"centrosaurus",title:"Centrosaurus",fact:"Centrosaurus had a single big horn on its nose and travelled in huge herds!",emoji:"🦕",wikiTitle:"Centrosaurus",parentID:"triceratops",category:"Dinosaurs"},
+  {id:"ankylosaurus",title:"Ankylosaurus",fact:"Ankylosaurus was covered in bony armour and had a huge club on its tail!",emoji:"🛡️",wikiTitle:"Ankylosaurus",parentID:"stegosaurus",category:"Dinosaurs"},
+  {id:"stegosaurus-thagomizer",title:"Thagomizer",fact:"The spikes on a Stegosaurus tail are called a thagomizer!",emoji:"📌",wikiTitle:"Thagomizer",parentID:"stegosaurus",category:"Dinosaurs"},
+  {id:"allosaurus",title:"Allosaurus",fact:"Allosaurus was a big meat-eating dinosaur that hunted Stegosaurus!",emoji:"🦖",wikiTitle:"Allosaurus",parentID:"stegosaurus",category:"Dinosaurs"},
+  {id:"diplodocus",title:"Diplodocus",fact:"Diplodocus was one of the longest dinosaurs with a neck and tail like a bridge!",emoji:"🦕",wikiTitle:"Diplodocus",parentID:"stegosaurus",category:"Dinosaurs"},
+  {id:"kentrosaurus",title:"Kentrosaurus",fact:"Kentrosaurus was covered in spikes from its neck all the way to its tail!",emoji:"📌",wikiTitle:"Kentrosaurus",parentID:"stegosaurus",category:"Dinosaurs"},
+  {id:"jurassic-fern",title:"Jurassic Fern Forest",fact:"In the Jurassic period, giant ferns and tall trees covered the whole Earth!",emoji:"🌿",wikiTitle:"Jurassic",parentID:"stegosaurus",category:"Dinosaurs"},
+  {id:"apatosaurus",title:"Apatosaurus",fact:"Apatosaurus used to be called Brontosaurus and was one of the biggest dinosaurs!",emoji:"🦕",wikiTitle:"Apatosaurus",parentID:"brachiosaurus",category:"Dinosaurs"},
+  {id:"argentinosaurus",title:"Argentinosaurus",fact:"Argentinosaurus was the heaviest dinosaur ever and weighed as much as 14 elephants!",emoji:"🦕",wikiTitle:"Argentinosaurus",parentID:"brachiosaurus",category:"Dinosaurs"},
+  {id:"brachio-footprint",title:"Dinosaur Footprint",fact:"Dinosaur footprints turned to stone and you can still see them today!",emoji:"🐾",wikiTitle:"Dinosaur_track",parentID:"brachiosaurus",category:"Dinosaurs"},
+  {id:"brachio-conifer",title:"Conifer Tree",fact:"Brachiosaurus ate from tall conifer trees that looked like giant Christmas trees!",emoji:"🎄",wikiTitle:"Conifer",parentID:"brachiosaurus",category:"Dinosaurs"},
+  {id:"ammonite",title:"Ammonite",fact:"Ammonites were beautiful spiral-shelled creatures that swam with the dinosaurs!",emoji:"🐚",wikiTitle:"Ammonite",parentID:"brachiosaurus",category:"Dinosaurs"},
+  {id:"brachio-museum",title:"Natural History Museum",fact:"You can see real dinosaur skeletons in natural history museums!",emoji:"🏛️",wikiTitle:"Natural_history_museum",parentID:"brachiosaurus",category:"Dinosaurs"},
+  {id:"quetzalcoatlus",title:"Quetzalcoatlus",fact:"Quetzalcoatlus was the biggest flying animal ever with wings wider than a plane!",emoji:"🦅",wikiTitle:"Quetzalcoatlus",parentID:"pteranodon",category:"Dinosaurs"},
+  {id:"pterodactyl",title:"Pterodactyl",fact:"Pterodactyl was one of the first flying reptiles ever discovered!",emoji:"🦕",wikiTitle:"Pterodactylus",parentID:"pteranodon",category:"Dinosaurs"},
+  {id:"archaeopteryx",title:"Archaeopteryx",fact:"Archaeopteryx was half dinosaur and half bird with feathers and teeth!",emoji:"🐦",wikiTitle:"Archaeopteryx",parentID:"pteranodon",category:"Dinosaurs"},
+  {id:"pteranodon-fish",title:"Prehistoric Fish",fact:"Pteranodon swooped over the ocean and scooped up fish with its long beak!",emoji:"🐟",wikiTitle:"Prehistoric_fish",parentID:"pteranodon",category:"Dinosaurs"},
+  {id:"mosasaur",title:"Mosasaur",fact:"Mosasaurs were huge ocean reptiles that swam when pteranodons flew above!",emoji:"🦎",wikiTitle:"Mosasaurus",parentID:"pteranodon",category:"Dinosaurs"},
+  {id:"ichthyosaur",title:"Ichthyosaur",fact:"Ichthyosaurs looked like dolphins but were actually ocean-swimming reptiles!",emoji:"🐬",wikiTitle:"Ichthyosaur",parentID:"pteranodon",category:"Dinosaurs"},
+  {id:"utahraptor",title:"Utahraptor",fact:"Utahraptor was the biggest raptor and could be taller than a grown-up person!",emoji:"🦖",wikiTitle:"Utahraptor",parentID:"velociraptor",category:"Dinosaurs"},
+  {id:"microraptor",title:"Microraptor",fact:"Microraptor had four wings and could glide between the trees!",emoji:"🪶",wikiTitle:"Microraptor",parentID:"velociraptor",category:"Dinosaurs"},
+  {id:"deinonychus",title:"Deinonychus",fact:"Deinonychus was like a bigger version of Velociraptor with a huge curved claw!",emoji:"🦖",wikiTitle:"Deinonychus",parentID:"velociraptor",category:"Dinosaurs"},
+  {id:"raptor-mongolia",title:"Mongolia",fact:"Velociraptor fossils were found in the deserts of Mongolia in Asia!",emoji:"🏜️",wikiTitle:"Mongolia",parentID:"velociraptor",category:"Dinosaurs"},
+  {id:"oviraptor",title:"Oviraptor",fact:"Oviraptor means egg thief but it was actually a good parent sitting on its eggs!",emoji:"🥚",wikiTitle:"Oviraptor",parentID:"velociraptor",category:"Dinosaurs"},
+  {id:"archaeopteryx-raptor",title:"Archaeopteryx",fact:"Scientists think birds today are actually the great-great-grandchildren of raptors!",emoji:"🐦",wikiTitle:"Archaeopteryx",parentID:"velociraptor",category:"Dinosaurs"}
+];
+
+// Build lookups
+const explorationsByParent = {};
+const explorationsById = {};
+explorations.forEach(e => {
+  if (!explorationsByParent[e.parentID]) explorationsByParent[e.parentID] = [];
+  explorationsByParent[e.parentID].push(e);
+  explorationsById[e.id] = e;
+});
+
+// Wikipedia title mapping for seed topics
+const wikiTitles = {
+  dolphin:'Bottlenose_dolphin', bat:'Bat', elephant:'African_elephant', penguin:'Emperor_penguin',
+  butterfly:'Monarch_butterfly', frog:'Red-eyed_tree_frog', owl:'Barn_owl',
+  'coral-reef':'Coral_reef', whale:'Humpback_whale', 'sea-turtle':'Green_sea_turtle',
+  octopus:'Common_octopus', jellyfish:'Jellyfish', starfish:'Starfish',
+  storm:'Thunderstorm', rainbow:'Rainbow', snow:'Snowflake', tornado:'Tornado',
+  clouds:'Cumulus_cloud', lightning:'Lightning',
+  volcano:'Volcano', waterfall:'Waterfall', desert:'Sahara', cave:'Cave',
+  mountain:'Mountain', forest:'Temperate_rainforest',
+  't-rex':'Tyrannosaurus', triceratops:'Triceratops', stegosaurus:'Stegosaurus',
+  brachiosaurus:'Brachiosaurus', pteranodon:'Pteranodon', velociraptor:'Velociraptor'
+};
+
+// Add exploration node wiki titles to the mapping
+explorations.forEach(e => { wikiTitles[e.id] = e.wikiTitle; });
+
+// Image cache
+const imageCache = {};
+async function fetchWikiImage(nodeId) {
+  if (imageCache[nodeId]) return imageCache[nodeId];
+  const title = wikiTitles[nodeId];
+  if (!title) return null;
+  try {
+    const resp = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    const data = await resp.json();
+    const url = data.thumbnail?.source || data.originalimage?.source;
+    if (url) {
+      const bigUrl = url.replace(/\/\d+px-/, '/600px-');
+      imageCache[nodeId] = bigUrl;
+      return bigUrl;
+    }
+  } catch(e) {}
+  return null;
+}
+
+function loadImage(el, nodeId, emoji) {
+  fetchWikiImage(nodeId).then(url => {
+    if (url) {
+      el.style.backgroundImage = `url(${url})`;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.textContent = '';
+    }
+  });
+}
+
+const catColors = { Animals:'var(--animals)', Ocean:'var(--ocean)', Weather:'var(--weather)', Earth:'var(--earth)', Dinosaurs:'var(--dinosaurs)' };
+const catEmojis = { Animals:'🐾', Ocean:'🌊', Weather:'🌤️', Earth:'🌍', Dinosaurs:'🦕' };
+
+let currentCategory = '';
+let currentTopicId = '';
+let navStack = [];
+
+function topicById(id) { return topics.find(t => t.id === id); }
+function explorationById(id) { return explorationsById[id]; }
+
+// Get siblings of an exploration node (other children of same parent, excluding self)
+function getSiblings(nodeId) {
+  const node = explorationsById[nodeId];
+  if (!node) return [];
+  return (explorationsByParent[node.parentID] || []).filter(n => n.id !== nodeId);
+}
+
+// Get related content for a leaf node (siblings + random from same category)
+function getRelatedContent(nodeId, category) {
+  let results = getSiblings(nodeId);
+  const usedIds = new Set([nodeId, ...results.map(r => r.id)]);
+
+  if (results.length < 6) {
+    const categoryNodes = explorations.filter(e => e.category === category && !usedIds.has(e.id));
+    // Shuffle and take what we need
+    for (let i = categoryNodes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [categoryNodes[i], categoryNodes[j]] = [categoryNodes[j], categoryNodes[i]];
+    }
+    results = results.concat(categoryNodes.slice(0, 6 - results.length));
+  }
+
+  return results.slice(0, 6);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('.phone-frame').scrollTop = 0;
+}
+
+function goHome() { navStack = []; showScreen('screen-home'); }
+
+function showCategory(cat) {
+  currentCategory = cat;
+  navStack = ['home'];
+  document.getElementById('cat-emoji').textContent = catEmojis[cat];
+  document.getElementById('cat-title').textContent = cat;
+  const catTopics = topics.filter(t => t.category === cat);
+  const grid = document.getElementById('cat-topics');
+  grid.innerHTML = catTopics.map(t => `
+    <div class="topic-card" onclick="showTopic('${t.id}')">
+      <div class="image-area" data-topic="${t.id}" style="background:${catColors[cat]}30">${t.emoji}</div>
+      <div class="label">${t.title}</div>
+    </div>
+  `).join('');
+  catTopics.forEach(t => {
+    const el = grid.querySelector(`[data-topic="${t.id}"]`);
+    if (el) loadImage(el, t.id, t.emoji);
+  });
+  showScreen('screen-category');
+}
+
+function backToCategory() { showCategory(currentCategory); }
+
+function renderExploreGrid(container, nodes, color) {
+  container.innerHTML = nodes.map(e => `
+    <div class="explore-card" onclick="showExploration('${e.id}')">
+      <div class="explore-img" data-explore="${e.id}" style="background:${color}30">${e.emoji}</div>
+      <div class="explore-label">${e.title}</div>
+    </div>
+  `).join('');
+  nodes.forEach(e => {
+    const el = container.querySelector(`[data-explore="${e.id}"]`);
+    if (el) loadImage(el, e.id, e.emoji);
+  });
+}
+
+function showTopic(id) {
+  currentTopicId = id;
+  const t = topicById(id);
+  if (!t) return;
+  currentCategory = t.category;
+  navStack = ['home', 'category'];
+  const color = catColors[t.category];
+
+  document.getElementById('topic-title').textContent = t.title;
+  const heroEl = document.getElementById('topic-hero');
+  heroEl.style.background = color + '40';
+  heroEl.style.backgroundImage = '';
+  heroEl.textContent = t.emoji;
+  loadImage(heroEl, t.id, t.emoji);
+  document.getElementById('topic-fact').textContent = t.fact;
+
+  // Exploration grid
+  const subs = explorationsByParent[t.id] || [];
+  const exploreGrid = document.getElementById('topic-explore-grid');
+  if (subs.length > 0) {
+    renderExploreGrid(exploreGrid, subs, color);
+  } else {
+    exploreGrid.innerHTML = '';
+  }
+
+  // Related topics
+  const relContainer = document.getElementById('topic-related');
+  relContainer.innerHTML = t.related.map(rid => {
+    const r = topicById(rid);
+    if (!r) return '';
+    return `
+      <div class="related-item" onclick="showTopic('${r.id}')">
+        <div class="rel-img" data-rel-topic="${r.id}" style="background:${catColors[r.category]}30">${r.emoji}</div>
+        <div class="rel-name">${r.title}</div>
+      </div>
+    `;
+  }).join('');
+  t.related.forEach(rid => {
+    const r = topicById(rid);
+    if (!r) return;
+    const el = relContainer.querySelector(`[data-rel-topic="${rid}"]`);
+    if (el) loadImage(el, rid, r.emoji);
+  });
+
+  showScreen('screen-topic');
+}
+
+function showExploration(nodeId) {
+  const node = explorationById(nodeId);
+  if (!node) return;
+  const color = catColors[node.category];
+
+  // Push current state to nav stack
+  navStack.push({ type: 'explore', id: nodeId });
+
+  document.getElementById('explore-title').textContent = node.title;
+  const heroEl = document.getElementById('explore-hero');
+  heroEl.style.background = color + '30';
+  heroEl.style.backgroundImage = '';
+  heroEl.textContent = node.emoji;
+  loadImage(heroEl, node.id, node.emoji);
+  document.getElementById('explore-fact').textContent = node.fact;
+
+  // Sub-explorations
+  const subs = explorationsByParent[node.id] || [];
+  const gridEl = document.getElementById('explore-grid');
+  const labelEl = document.getElementById('explore-grid-label');
+
+  if (subs.length > 0) {
+    labelEl.textContent = 'Explore';
+    labelEl.style.display = '';
+    renderExploreGrid(gridEl, subs, color);
+  } else {
+    // No dead ends — show related content
+    const related = getRelatedContent(nodeId, node.category);
+    if (related.length > 0) {
+      labelEl.textContent = 'Keep Exploring';
+      labelEl.style.display = '';
+      renderExploreGrid(gridEl, related, color);
+    } else {
+      labelEl.style.display = 'none';
+      gridEl.innerHTML = '';
+    }
+  }
+
+  // "You Might Also Like" — related seed topics from same category
+  const relLabel = document.getElementById('explore-related-label');
+  const relContainer = document.getElementById('explore-related');
+  const categoryTopics = topics.filter(t => t.category === node.category && t.id !== node.parentID).slice(0, 5);
+
+  if (categoryTopics.length > 0) {
+    relLabel.style.display = '';
+    relContainer.innerHTML = categoryTopics.map(r => `
+      <div class="related-item" onclick="showTopic('${r.id}')">
+        <div class="rel-img" data-rel-explore-topic="${r.id}" style="background:${catColors[r.category]}30">${r.emoji}</div>
+        <div class="rel-name">${r.title}</div>
+      </div>
+    `).join('');
+    categoryTopics.forEach(r => {
+      const el = relContainer.querySelector(`[data-rel-explore-topic="${r.id}"]`);
+      if (el) loadImage(el, r.id, r.emoji);
+    });
+  } else {
+    relLabel.style.display = 'none';
+    relContainer.innerHTML = '';
+  }
+
+  // Back button for exploration
+  document.getElementById('explore-back-btn').onclick = function() {
+    navStack.pop();
+    const prev = navStack[navStack.length - 1];
+    if (prev && prev.type === 'explore') {
+      navStack.pop();
+      showExploration(prev.id);
+    } else {
+      showTopic(currentTopicId);
+    }
+  };
+
+  showScreen('screen-explore');
+}
+
+// Build home screen
+function initHome() {
+  const categories = ['Animals', 'Ocean', 'Weather', 'Earth', 'Dinosaurs'];
+  const repTopics = {};
+  categories.forEach(cat => { repTopics[cat] = topics.find(t => t.category === cat); });
+
+  const grid = document.getElementById('home-categories');
+  grid.innerHTML = categories.map(cat => {
+    const count = topics.filter(t => t.category === cat).length;
+    const cssClass = 'cat-' + cat.toLowerCase();
+    return `
+      <div class="category-card ${cssClass}" data-cat-img="${cat}" onclick="showCategory('${cat}')">
+        <div class="emoji">${catEmojis[cat]}</div>
+        <div class="cat-label">
+          <div class="name">${cat}</div>
+          <div class="count">${count} topics</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  categories.forEach(cat => {
+    const rep = repTopics[cat];
+    if (!rep) return;
+    const el = grid.querySelector(`[data-cat-img="${cat}"]`);
+    if (!el) return;
+    fetchWikiImage(rep.id).then(url => {
+      if (url) {
+        el.style.backgroundImage = `url(${url})`;
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
+        const emojiEl = el.querySelector('.emoji');
+        if (emojiEl) emojiEl.style.display = 'none';
+      }
+    });
+  });
+}
+
+initHome();
+</script>
+</body>
+</html>
