@@ -12,11 +12,11 @@ Do this on every post, Story, and stream — even if you'd recommend us for free
 
 Vague doesn't count: #collab, #sp, #ambassador, or just tagging us isn't disclosure.
 
-## 2. Tell YOUR story — don't make product promises
+## 2. Tell YOUR story, in YOUR words
 
-What happened with *your* baby is perfect content: "We made it through the night with zero leaks." "Way fewer blowouts." "Her skin has been so happy since we switched."
+We will never hand you a script — your voice is the whole reason we partnered with you. What happened with *your* baby, said your way, is perfect content: "We made it through the night with zero leaks." "Way fewer blowouts." "Her skin has been so happy since we switched."
 
-What you can't do is state facts or promises: no statistics, no "best/safest diaper," no "never leaks," no comparisons to Pampers, Huggies, or anyone else. If we've given you an official claim to use, quote it word-for-word — don't round up or reword it.
+The only thing to skip is stating facts or promises that aren't your own experience: no statistics or percentages, no "best/safest diaper," no "never leaks," no comparisons to Pampers, Huggies, or anyone else. Your story doesn't need any of that anyway.
 
 ## 3. Skip the danger words
 
