@@ -10,7 +10,7 @@ This Creator Partnership Agreement ("Agreement") is between **[Freestyle legal e
 
 ### 1. The Partnership
 
-Freestyle is engaging you to create and publish social media content featuring Freestyle products, as described in the campaign brief attached in Growi (the "Brief"). The Brief specifies deliverables, platforms, quantities, and deadlines; if this Agreement and the Brief conflict, this Agreement controls.
+Freestyle is inviting you to create and publish social media content featuring Freestyle products, guided by the campaign brief attached in Growi (the "Brief"). **There is no minimum posting requirement** — you post if and when you genuinely want to, and nothing about your compensation depends on what you say. Remaining on the active roster for future product drops requires at least one published post showing real use of the products (an unboxing alone doesn't qualify) — whether you post is up to you; the sentiment of what you post never matters. If this Agreement and the Brief conflict, this Agreement controls.
 
 ### 2. Compensation
 
