@@ -29,10 +29,10 @@
 | Paid usage | Pre-negotiated flat $150–250 per asset licensed into ads (whitelisting/Spark Ads), baked into every contract. |
 | Rotating bonuses | One or two active bonuses each month/quarter, announced in Growi, rotated to keep the program fresh (menu below). Every bonus keys off behavior or metrics — never sentiment. |
 
-**The rotating bonus menu** — pick 1–2 per period, publish terms in Growi before the period starts, cap the monthly pool. Starting points to tune:
+**The rotating bonus menu** — pick 1–2 per period and publish terms in Growi before the period starts. **Every earned bonus gets paid, always** — there is no "pool cap" that can void an earned offer. Cost is controlled by structure: fixed-payout formats (contests, leaderboards, creator of the month) carry the bigger dollars; open offers are sized so the worst case is affordable (e.g., $50 × 100 creators = $5,000 absolute ceiling — budget on worst case × realistic hit rate); an over-performing bonus is honored in full and tuned next month. Never change terms mid-period. Starting points:
 
-- **Volume:** $50–75 for publishing 3+ qualifying videos (in-use, non-unboxing) in the month.
-- **Engagement:** $100 when a qualifying post clears a metric threshold (e.g., 25k views, or top-decile engagement rate for their follower size — the fairer bar for nanos).
+- **Volume:** $50–75 for publishing 3+ qualifying videos (in-use, non-unboxing) in the month — open offer, worst case bounded by roster size.
+- **Engagement:** $100 to the top 10 qualifying posts by engagement rate for follower size — a leaderboard, fixed payout by design, and a fairer bar for nanos than a flat views number.
 - **Conversion:** commission bumps to 20% (or a flat $) past a GMV milestone — Growi automates these thresholds natively.
 - **Product perks:** an extra or upsized drop for a 2–3 month posting streak; first access to new products for the most consistent posters.
 - **Creator of the month:** $150–250 + a feature on Freestyle's channels, selected on objective performance (views, saves, attributed sales) — never on how flattering the content was.
