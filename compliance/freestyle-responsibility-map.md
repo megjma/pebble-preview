@@ -41,7 +41,7 @@ If a creator does those three things, their personal risk is close to zero — t
 
 ---
 
-## The workflow (what Giovanna's team runs)
+## The workflow (what the partnerships team runs)
 
 1. **Onboard** — send guidelines → get written acknowledgment → countersigned contract with claims annex.
 2. **Equip** — share the current approved claims list; update creators when it changes.
