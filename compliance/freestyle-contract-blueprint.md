@@ -27,7 +27,17 @@
 | Commission | 15% of attributed net sales to start (raise to 20% for proven performers), tracked link/code, paid monthly through Growi. Commission is what makes voluntary posting happen. |
 | Flat fees | None at the 2–10k tier — product + commission is market standard; fees are for retainer-level ambassadors later. |
 | Paid usage | Pre-negotiated flat $150–250 per asset licensed into ads (whitelisting/Spark Ads), baked into every contract. |
-| Bonuses (optional) | Sales-milestone bonuses only (e.g., +5% over a GMV threshold — Growi automates this). |
+| Rotating bonuses | One or two active bonuses each month/quarter, announced in Growi, rotated to keep the program fresh (menu below). Every bonus keys off behavior or metrics — never sentiment. |
+
+**The rotating bonus menu** — pick 1–2 per period, publish terms in Growi before the period starts, cap the monthly pool. Starting points to tune:
+
+- **Volume:** $50–75 for publishing 3+ qualifying videos (in-use, non-unboxing) in the month.
+- **Engagement:** $100 when a qualifying post clears a metric threshold (e.g., 25k views, or top-decile engagement rate for their follower size — the fairer bar for nanos).
+- **Conversion:** commission bumps to 20% (or a flat $) past a GMV milestone — Growi automates these thresholds natively.
+- **Product perks:** an extra or upsized drop for a 2–3 month posting streak; first access to new products for the most consistent posters.
+- **Creator of the month:** $150–250 + a feature on Freestyle's channels, selected on objective performance (views, saves, attributed sales) — never on how flattering the content was.
+
+*Compliance notes for whoever writes each month's bonus:* (1) qualify posts by **format and use**, never tone — "3 great posts about how much you love Freestyle" is an illegal incentive; "3 videos showing Freestyle in use" is a clean one; (2) bonuses are compensation, so the disclosure duty on every post is unchanged.
 
 **Compensation must never:** be conditioned on positive sentiment, a good review, or "loving it" (in the contract, Growi settings, or any DM); pay for retail reviews; or penalize honest, less-than-glowing content.
 
