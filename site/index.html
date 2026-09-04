@@ -63,6 +63,26 @@
   h1 em { font-style: normal; color: var(--accent); }
   .lede { font-size: 18px; color: var(--ink-soft); max-width: 60ch; margin: 0 0 24px; }
 
+  .purpose { font-size: 15.5px; color: var(--ink-soft); margin: 0 0 18px; max-width: 62ch; }
+  .purpose a, .whynow a { color: var(--accent); font-weight: 700; }
+  a.todo {
+    background: #FDF3D8; color: #6B5410; border-radius: 6px; padding: 1px 7px;
+    font-weight: 700; text-decoration: none; white-space: nowrap;
+  }
+  :root[data-theme="dark"] a.todo { background: #3A331C; color: #E8D48A; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) a.todo { background: #3A331C; color: #E8D48A; } }
+  .whynow {
+    background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--bamboo);
+    border-radius: 14px; padding: 18px 22px; margin-bottom: 14px;
+  }
+  .whynow .tag { font-weight: 800; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--bamboo); }
+  .whynow p { margin: 6px 0 0; font-size: 16px; }
+  .whynow blockquote {
+    margin: 10px 0; padding: 10px 16px; border-left: 3px solid var(--line);
+    font-size: 15px; color: var(--ink-soft); font-style: italic;
+  }
+  .whynow .gap { font-weight: 700; }
+
   .tldr {
     background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--accent);
     border-radius: 14px; padding: 18px 22px; margin-bottom: 8px;
@@ -121,6 +141,16 @@
   <div class="brand"><div class="dot">🌱</div><span>Freestyle · Internal Proposal</span></div>
   <h1>A Creator Program on <em>Growi</em></h1>
   <p class="lede">Proposal: a 90-day nano/micro creator flood on TikTok and Instagram, run through Growi, built on own-voice content — real parents telling their real Freestyle story in their own words.</p>
+
+  <p class="purpose">The DTC business exists to own our relationship with parents directly — the customer data, the margin, and the brand story that retail shelves can't carry. <a class="todo" href="#ADD-LINK-role-of-dtc">Read: The Role of DTC →</a></p>
+
+  <div class="whynow">
+    <span class="tag">Why now: creative velocity</span>
+    <p>The single most critical next step to grow the DTC business is <strong>more ad creative, launched faster</strong> — a higher velocity of new ads every week. The data on this is stark:</p>
+    <blockquote>"The top 25% performing companies ship an average of <strong>183 new ads a week</strong>. The bottom 75% performing companies ship an average of 89 new ads a week." — <a href="https://www.linkedin.com/posts/northbeam_people-always-ask-us-how-many-ads-they-should-activity-7457531612583333888-PyY4">Northbeam, Q1 findings</a></blockquote>
+    <p class="gap">Freestyle currently has 19 ads running — total. We're not behind the top quartile; we're an order of magnitude below the bottom one. No production budget closes that gap; a creator program generating 200–300 pieces a quarter is the only economics that do.</p>
+    <p style="font-size: 14.5px; color: var(--ink-soft);">See also our <a class="todo" href="#ADD-LINK-competitor-ad-analysis">ongoing analysis of competitors' ads →</a></p>
+  </div>
 
   <div class="tldr">
     <span class="tag">TL;DR</span>
