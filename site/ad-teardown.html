@@ -208,7 +208,7 @@
   <!-- 00 EXECUTIVE SUMMARY -->
   <section id="exec">
     <div class="sec-head"><span class="n">✦</span><h2>Executive summary</h2></div>
-    <p class="exec-lead">Freestyle competes in premium DTC diapers against advertisers running 4–7× its ad volume. The upside: it is the <b>cheapest premium diaper in the set</b> and is scaling creative faster than anyone. The job now is to convert that price advantage into acquisition — through more volume, a sharper funnel, and stronger proof.</p>
+    <p class="exec-lead">Freestyle competes in premium DTC diapers against advertisers running 4–7× its ad volume. The upside: it is the <b>cheapest premium diaper in the set</b> and has begun growing its creative library. The job now is to convert that price advantage into acquisition — through more volume, a sharper funnel, and stronger proof.</p>
     <div class="exec-grid">
       <div class="exec-card" style="--bc:var(--cot)">
         <div class="el">Where we stand</div>
@@ -239,12 +239,12 @@
   <!-- 01 SCOREBOARD -->
   <section>
     <div class="sec-head"><span class="n">01</span><h2>The scoreboard</h2></div>
-    <p class="lead">Active-ad count is the clearest read on budget and testing velocity. Two competitors — <b>Millie Moon (~130)</b> and <b>Coterie (~120)</b> — run ~5× Freestyle's library. But Freestyle is moving: it grew from ~19 to <b>~26 ads in 8 days</b> and just launched a dedicated offer lander. It's still the smallest account <em>and</em> the cheapest product — its sharpest, least-contested weapon.</p>
+    <p class="lead">Active-ad count is the clearest read on budget and testing velocity. Two competitors — <b>Millie Moon (~130)</b> and <b>Coterie (~120)</b> — run ~5× Freestyle's library. Freestyle grew from ~19 to <b>~26 ads in 8 days</b> and just launched a dedicated offer lander. It's still the smallest account <em>and</em> the cheapest product — its sharpest, least-contested weapon.</p>
     <div class="board">
       <div class="tile fs">
         <div class="bname"><span class="dot"></span>Freestyle</div>
         <div class="big">~26</div><div class="cap">active ads · $60–70/mo</div>
-        <div class="foot">Ramping fast — up from ~19 in 8 days. New dedicated offer lander live.<span class="tag">Value DTC</span></div>
+        <div class="foot">Up from ~19 in 8 days. New dedicated offer lander live.<span class="tag">Value DTC</span></div>
       </div>
       <div class="tile mm">
         <div class="bname"><span class="dot"></span>Millie Moon</div>
@@ -275,7 +275,7 @@
       <div class="bar"><span class="bl">Peachies</span><div class="track"><div class="fill" style="width:33%;--bc:var(--pe)"></div></div><span class="bv">~43</span></div>
       <div class="bar"><span class="bl">Freestyle</span><div class="track"><div class="fill" style="width:20%;--bc:var(--fs)"></div></div><span class="bv">~26</span></div>
     </div>
-    <div class="note"><b>Volume context:</b> per Northbeam, the <b>top-25% performing ad accounts launched ~189 new ads/week</b> in Q1 2026. Every competitor here is testing at 2–5× Freestyle's active volume. Freestyle is closing the gap fast (+37% in 8 days) but is still the smallest; getting output up remains the precondition for everything else in this report.</div>
+    <div class="note"><b>Volume context:</b> per Northbeam, the <b>top-25% performing ad accounts launched ~189 new ads/week</b> in Q1 2026. Every competitor here is testing at 2–5× Freestyle's active volume. Freestyle grew in the last cycle but is still the smallest; getting output up remains the precondition for everything else in this report.</div>
   </section>
 
   <!-- 02 TWO MODELS -->
@@ -506,7 +506,7 @@
   const SNAPSHOTS=[
     {date:"Aug 12",counts:{Freestyle:19,"Millie Moon":130,Coterie:110,Parasol:44,Peachies:43}},
     {date:"Aug 20",counts:{Freestyle:26,"Millie Moon":130,Coterie:120,Parasol:60,Peachies:43},notes:{
-      Freestyle:"+7 ads (19→26), the fastest mover. Launched go.freestyle.world — an Unbounce offer lander (15% off/mo, code GET15); ~35% of clicks now route there instead of the single PDP. Added a wipes PDP; creator UGC still ramping.",
+      Freestyle:"+7 ads (19→26). Launched go.freestyle.world — an Unbounce offer lander (15% off/mo, code GET15); ~35% of clicks now route there instead of the single PDP. Added a wipes PDP; creator UGC still ramping.",
       "Millie Moon":"Flat at ~130 (volume leader). The Aug 1 batch (~20 ads) still dominates; Ms. Rachel training-pants tie-in continuing. Retail-driving model (Target / Walmart / grocery) unchanged.",
       Coterie:"+10 ads (110→120). The 'Glamour: best diapers' press static is still the evergreen workhorse; steady weekly refresh; clicks stay spread across the full catalog.",
       Parasol:"Diaper line scaling (~44→~60 total, ~half diaper-focused). Pushing RashShield Diaper Pants (Aug 11, 4+ variants) + disposable bibs (Aug 17). Static-heavy, 20%-off-first-order hook.",
@@ -514,7 +514,7 @@
     }}
   ];
   const FS_PROGRESS=[
-    {k:"Volume",v:"~26 active ads",n:"Up +37% from ~19 in 8 days. Still ~5× behind Millie Moon / Coterie, but closing fast.",d:"up"},
+    {k:"Volume",v:"~26 active ads",n:"Up from ~19 in 8 days. Still ~5× behind Millie Moon / Coterie.",d:"up"},
     {k:"Funnel",v:"Offer lander live",n:"go.freestyle.world (Unbounce) now takes ~35% of clicks — first move off single-PDP dependence. Next: turn the bridge into a real advertorial.",d:"up"},
     {k:"Offer",v:"GET15 → $59.50/mo",n:"New 15%-off-every-month code makes Freestyle the cheapest effective price in the set (alongside the FIRST50 50%-off-first-month).",d:"up"},
     {k:"Catalog",v:"Wipes PDP added",n:"Training pants are still Walmart-only (no DTC PDP). Room for bundles + a trial / starter kit.",d:"flat"},
@@ -551,7 +551,7 @@
   }
   function summary(){
     const l=SNAPSHOTS[SNAPSHOTS.length-1],p=SNAPSHOTS[SNAPSHOTS.length-2]||l;
-    return '<b>Snapshot — '+esc(l.date)+', 2026.</b> Freestyle is at <b>~'+l.counts.Freestyle+' active ads</b> (up from ~'+p.counts.Freestyle+') — the fastest mover this cycle. Millie Moon (~'+l.counts["Millie Moon"]+') and Coterie (~'+l.counts.Coterie+') still lead on raw volume; Parasol is scaling its diaper line (~'+p.counts.Parasol+'→~'+l.counts.Parasol+'); Peachies holds steady (~'+l.counts.Peachies+', UK). Detail below.';
+    return '<b>Snapshot — '+esc(l.date)+', 2026.</b> Freestyle is at <b>~'+l.counts.Freestyle+' active ads</b> (up from ~'+p.counts.Freestyle+'). Millie Moon (~'+l.counts["Millie Moon"]+') and Coterie (~'+l.counts.Coterie+') still lead on raw volume; Parasol is scaling its diaper line (~'+p.counts.Parasol+'→~'+l.counts.Parasol+'); Peachies holds steady (~'+l.counts.Peachies+', UK). Detail below.';
   }
   function log(){
     const notes=SNAPSHOTS[SNAPSHOTS.length-1].notes||{};
