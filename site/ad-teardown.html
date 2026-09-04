@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diaper Wars — Meta Ad Teardown</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --paper:#f6f4ef; --surface:#fffefb; --surface-2:#efece4; --line:#e2ded3;
+    --ink:#20202a; --ink-soft:#54525e; --ink-faint:#86838f;
+    --accent:#5b3fb0; --accent-soft:#efeaff;
+    --good:#1f7a52; --warn:#b06a12; --crit:#b33636;
+    --fs:#7b4fd6; --fs-bg:#efe7ff;
+    --cot:#243a63; --cot-bg:#e2e7f0;
+    --mm:#4f5bc0; --mm-bg:#e5e6fa;
+    --pa:#c05f34; --pa-bg:#f6e7de;
+    --pe:#cf4f7e; --pe-bg:#f9e2ec;
+    --shadow:0 1px 2px rgba(30,28,40,.05),0 6px 22px -12px rgba(30,28,40,.18);
+    --serif:Charter,"Bitstream Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --paper:#15141a; --surface:#1e1d25; --surface-2:#26242e; --line:#332f3c;
+    --ink:#eceaf2; --ink-soft:#b2afbc; --ink-faint:#807d8b;
+    --accent:#b7a0ff; --accent-soft:#2a2340;
+    --good:#5fc48d; --warn:#e0a24e; --crit:#e87b7b;
+    --fs:#b79bff; --fs-bg:#2c2448; --cot:#93accf; --cot-bg:#1f2740;
+    --mm:#9aa2ec; --mm-bg:#20213f; --pa:#e08a5e; --pa-bg:#37241a; --pe:#ec84a8; --pe-bg:#371d28;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px -14px rgba(0,0,0,.7);
+  }}
+  :root[data-theme="dark"]{
+    --paper:#15141a; --surface:#1e1d25; --surface-2:#26242e; --line:#332f3c;
+    --ink:#eceaf2; --ink-soft:#b2afbc; --ink-faint:#807d8b;
+    --accent:#b7a0ff; --accent-soft:#2a2340;
+    --good:#5fc48d; --warn:#e0a24e; --crit:#e87b7b;
+    --fs:#b79bff; --fs-bg:#2c2448; --cot:#93accf; --cot-bg:#1f2740;
+    --mm:#9aa2ec; --mm-bg:#20213f; --pa:#e08a5e; --pa-bg:#37241a; --pe:#ec84a8; --pe-bg:#371d28;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px -14px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;font-size:16px}
+  .wrap{max-width:1180px;margin:0 auto;padding:clamp(20px,5vw,56px) clamp(16px,4vw,40px) 90px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.12;text-wrap:balance;margin:0}
+  a{color:var(--accent)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 14px}
+  .mast{border-bottom:2px solid var(--ink);padding-bottom:26px}
+  .mast h1{font-size:clamp(33px,6vw,62px);letter-spacing:-.015em}
+  .mast .sub{font-size:clamp(16px,2.2vw,21px);color:var(--ink-soft);max-width:64ch;margin-top:16px;font-family:var(--serif);font-style:italic}
+  .metaline{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:20px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink-faint);text-transform:uppercase}
+  .metaline b{color:var(--ink-soft);font-weight:600}
+  section{margin-top:58px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:10px}
+  .sec-head .n{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600}
+  .sec-head h2{font-size:clamp(22px,3.4vw,32px);letter-spacing:-.01em}
+  .lead{color:var(--ink-soft);max-width:78ch;margin:0 0 24px;font-size:15.5px}
+  /* scoreboard */
+  .board{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  @media(max-width:900px){.board{grid-template-columns:repeat(2,1fr)}}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 14px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--bc)}
+  .tile .bname{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--bc);flex:none}
+  .tile .big{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1;margin:12px 0 2px;font-variant-numeric:tabular-nums}
+  .tile .cap{font-size:11.5px;color:var(--ink-faint)}
+  .tile .foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);min-height:52px}
+  .tag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;padding:3px 6px;border-radius:5px;background:var(--bc-bg);color:var(--bc);font-weight:700;margin-top:8px}
+  .fs{--bc:var(--fs);--bc-bg:var(--fs-bg)} .cot{--bc:var(--cot);--bc-bg:var(--cot-bg)}
+  .mm{--bc:var(--mm);--bc-bg:var(--mm-bg)} .pa{--bc:var(--pa);--bc-bg:var(--pa-bg)} .pe{--bc:var(--pe);--bc-bg:var(--pe-bg)}
+  .bars{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 20px;box-shadow:var(--shadow)}
+  .bars .bt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:16px}
+  .bar{display:grid;grid-template-columns:104px 1fr auto;align-items:center;gap:12px;margin:9px 0}
+  .bar .bl{font-size:13px;font-weight:600}
+  .bar .track{background:var(--surface-2);border-radius:6px;height:22px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:6px;background:var(--bc);animation:grow 1s cubic-bezier(.2,.7,.2,1) both}
+  .bar .bv{font-family:var(--mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;min-width:60px;text-align:right}
+  @keyframes grow{from{width:0!important}}
+  @media(prefers-reduced-motion:reduce){.fill{animation:none}}
+  /* callout two-model */
+  .models{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+  @media(max-width:760px){.models{grid-template-columns:1fr}}
+  .model{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+  .model h3{font-size:18px;margin-bottom:6px}
+  .model .mtag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+  .model p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0}
+  .model .who{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .chip{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:var(--bc-bg);color:var(--bc)}
+  /* tables */
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:960px;font-size:13.5px}
+  th,td{text-align:left;padding:12px 14px;vertical-align:top;border-bottom:1px solid var(--line)}
+  thead th{position:sticky;top:0;background:var(--surface-2);font-size:11.5px;font-family:var(--mono);letter-spacing:.03em;text-transform:uppercase;color:var(--ink-soft);z-index:2}
+  th[scope=row]{font-family:var(--sans);font-weight:700;font-size:12.5px;background:var(--surface);position:sticky;left:0;z-index:1;min-width:140px;color:var(--ink)}
+  th[scope=row] small{display:block;font-weight:400;color:var(--ink-faint);font-size:11px;margin-top:3px}
+  tbody tr:hover td,tbody tr:hover th[scope=row]{background:var(--accent-soft)}
+  .colhead{font-weight:700;color:var(--bc);font-family:var(--serif);font-size:16px}
+  td b{font-weight:700} td .muted{color:var(--ink-faint);font-size:12px}
+  td.fscol,th.fscol{background:color-mix(in srgb,var(--fs-bg) 45%,transparent)}
+  tbody tr:hover td.fscol{background:color-mix(in srgb,var(--fs-bg) 72%,transparent)}
+  .num{font-variant-numeric:tabular-nums}
+  .matrix td,.matrix th{text-align:center}.matrix th[scope=row]{text-align:left}
+  .lvl{display:inline-block;min-width:64px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.03em;padding:4px 7px;border-radius:20px;text-transform:uppercase}
+  .l-sig{background:var(--good);color:#fff}.l-core{background:var(--accent-soft);color:var(--accent)}.l-some{background:var(--surface-2);color:var(--ink-soft)}.l-none{color:var(--ink-faint);opacity:.45}
+  /* winner cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.cards{grid-template-columns:1fr}}
+  .pcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);border-top:3px solid var(--bc)}
+  .pcard h3{font-size:19px;display:flex;align-items:center;gap:9px}
+  .pcard .role{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--bc);margin:4px 0 12px;font-weight:600}
+  .winner{background:var(--bc-bg);border-radius:10px;padding:11px 13px;margin:0 0 13px;font-size:13px}
+  .winner .wl{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--bc);font-weight:700;display:block;margin-bottom:4px}
+  .winner q{color:var(--ink);font-style:italic;font-family:var(--serif);font-size:14px}
+  .pcard ul{margin:0;padding:0;list-style:none}
+  .pcard li{position:relative;padding:7px 0 7px 20px;font-size:13px;color:var(--ink-soft);border-bottom:1px dashed var(--line)}
+  .pcard li:last-child{border-bottom:none}
+  .pcard li::before{content:"";position:absolute;left:0;top:14px;width:6px;height:6px;border-radius:50%;background:var(--bc)}
+  .pcard li b{color:var(--ink);font-weight:600}
+  /* recs */
+  .recs{display:grid;gap:14px}
+  .rec{display:grid;grid-template-columns:auto 1fr;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)}
+  .rec .rn{font-family:var(--serif);font-size:34px;font-weight:600;color:var(--accent);line-height:1;font-variant-numeric:tabular-nums}
+  .rec h3{font-size:18px;margin-bottom:6px}.rec p{margin:0;color:var(--ink-soft);font-size:14px}
+  .rec .pri{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;font-weight:600;margin-bottom:9px}
+  .p-now{background:var(--fs-bg);color:var(--fs)}.p-next{background:var(--surface-2);color:var(--ink-soft)}
+  .rec p b{color:var(--ink)}
+  .note{background:var(--surface-2);border-left:3px solid var(--warn);border-radius:0 12px 12px 0;padding:15px 20px;font-size:13.5px;color:var(--ink-soft);margin-top:16px}
+  .note b{color:var(--ink)} .gap{color:var(--crit);font-weight:700}
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-faint)}
+  footer p{margin:6px 0}
+  .kws{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .kw{font-family:var(--mono);font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:20px;color:var(--ink-soft)}
+  /* tabs + weekly tracker */
+  .tabbar{display:flex;gap:4px;margin:26px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{appearance:none;background:none;border:none;font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:var(--ink-faint);padding:12px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab:hover{color:var(--ink)}
+  .tab:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+  .panel[hidden]{display:none}
+  .tk-latest{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);font-size:15px;color:var(--ink-soft)}
+  .tk-latest b{color:var(--ink)}
+  .tk-svg{width:100%;height:auto;display:block}
+  .tk-legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:12px;color:var(--ink-soft)}
+  .tk-legend span{display:inline-flex;align-items:center;gap:6px}
+  .tk-legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+  #tk-table{min-width:520px}
+  .tk-swatch{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
+  .tk-delta.up{color:var(--good)}.tk-delta.down{color:var(--crit)}.tk-delta.flatc{color:var(--ink-faint)}
+  .tk-log{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.tk-log{grid-template-columns:1fr}}
+  .tk-item{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bc);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .tk-item h4{margin:0 0 6px;font-family:var(--sans);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .tk-item h4 .d{width:9px;height:9px;border-radius:50%;background:var(--bc);flex:none}
+  .tk-item p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5}
+  .tk-fs{display:grid;gap:10px}
+  .tk-frow{display:grid;grid-template-columns:130px 1fr auto;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  @media(max-width:600px){.tk-frow{grid-template-columns:1fr;gap:6px}}
+  .tk-frow .mk{font-weight:700;font-size:14px;font-family:var(--serif)}
+  .tk-frow .nb{font-size:13px;color:var(--ink-soft)}.tk-frow .nb b{color:var(--ink)}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 9px;border-radius:20px;white-space:nowrap}
+  .badge.up{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+  .badge.gap{background:color-mix(in srgb,var(--crit) 16%,transparent);color:var(--crit)}
+  .badge.flat{background:var(--surface-2);color:var(--ink-faint)}
+  /* executive summary */
+  #exec{margin-top:34px}
+  .exec-lead{font-family:var(--serif);font-size:clamp(17px,2.4vw,22px);line-height:1.45;color:var(--ink);max-width:72ch;margin:0 0 22px}
+  .exec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:760px){.exec-grid{grid-template-columns:1fr}}
+  .exec-card{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--bc);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .exec-card .el{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--bc);margin-bottom:8px}
+  .exec-card h3{font-size:17px;margin-bottom:7px}
+  .exec-card p{margin:0;font-size:13.5px;color:var(--ink-soft)}
+  .exec-actions{margin-top:16px;background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+  .exec-actions h3{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+  .exec-actions ol{margin:0;padding-left:22px}
+  .exec-actions li{font-size:14px;margin:7px 0;color:var(--ink-soft)}
+  .exec-actions li b{color:var(--ink)}
+</style>
+</head>
+<body>
+<nav id="doc-nav" aria-label="Freestyle docs" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:14px 16px 4px; font-size:12.5px; letter-spacing:.03em; text-transform:uppercase; font-family:inherit;"><a href="index.html" style="color: var(--ink-soft); text-decoration: none; font-weight: 600; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; white-space: nowrap; background: var(--surface);">Proposal</a><a href="rulebook.html" style="color: var(--ink-soft); text-decoration: none; font-weight: 600; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; white-space: nowrap; background: var(--surface);">Rulebook</a><a href="contract-blueprint.html" style="color: var(--ink-soft); text-decoration: none; font-weight: 600; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; white-space: nowrap; background: var(--surface);">Contract Blueprint</a><a href="dtc.html" style="color: var(--ink-soft); text-decoration: none; font-weight: 600; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; white-space: nowrap; background: var(--surface);">What Is DTC For?</a><span style="font-weight:700; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 6px 14px; white-space: nowrap;">Ad Teardown</span></nav>
+
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Competitive Intelligence · Paid Social</p>
+    <h1>Diaper Wars: The Meta Ad-Library Deep Dive</h1>
+    <p class="sub">Freestyle vs. Coterie, Millie Moon, Parasol &amp; Peachies — every active ad, funnel, and creative angle, mapped for growth.</p>
+    <div class="metaline">
+      <span><b>Prepared for</b> Freestyle · CMO &amp; Growth</span>
+      <span><b>Source</b> Meta Ad Library · US (Peachies: UK)</span>
+      <span><b>Snapshot</b> Aug 20, 2026</span>
+      <span><b>Coverage</b> ~380 active ads + site funnels</span>
+      <span><b>Confidential</b> · Internal</span>
+    </div>
+  </header>
+
+  <nav class="tabbar" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" data-panel="panel-deepdive" aria-selected="true">Deep Dive</button>
+    <button class="tab" role="tab" data-panel="panel-tracker" aria-selected="false">Weekly Tracker ▸</button>
+  </nav>
+
+  <div class="panel" id="panel-deepdive">
+
+  <!-- 00 EXECUTIVE SUMMARY -->
+  <section id="exec">
+    <div class="sec-head"><span class="n">✦</span><h2>Executive summary</h2></div>
+    <p class="exec-lead">Freestyle competes in premium DTC diapers against advertisers running 4–7× its ad volume. The upside: it is the <b>cheapest premium diaper in the set</b> and is scaling creative faster than anyone. The job now is to convert that price advantage into acquisition — through more volume, a sharper funnel, and stronger proof.</p>
+    <div class="exec-grid">
+      <div class="exec-card" style="--bc:var(--cot)">
+        <div class="el">Where we stand</div>
+        <h3>Out-gunned on volume, moving fast</h3>
+        <p>~26 active ads vs. Millie Moon ~130 and Coterie ~120 — the smallest library in the set, but up +37% in eight days. Volume is the input the category leaders compound on.</p>
+      </div>
+      <div class="exec-card" style="--bc:var(--fs)">
+        <div class="el">The opening</div>
+        <h3>Freestyle owns the value lane</h3>
+        <p>At $70/mo ($59.50 with code GET15), Freestyle is the cheapest premium diaper here — a position none of the three premium DTC rivals will follow. Parasol is the closest twin ("RashShield" vs. "Skin♥Shield") and sits $14 higher.</p>
+      </div>
+      <div class="exec-card" style="--bc:var(--warn)">
+        <div class="el">The biggest lever</div>
+        <h3>Funnel &amp; proof, not the ad</h3>
+        <p>Rivals convert with advertorials, cheap trials, and press/award proof. Freestyle routes most clicks to a single product page and carries the fewest reviews in the set (1,450 vs. Coterie's 9,600). Closing that gap is the highest-ROI work.</p>
+      </div>
+    </div>
+    <div class="exec-actions">
+      <h3>Priority moves — next 30 days</h3>
+      <ol>
+        <li><b>Keep ramping creative volume</b> toward the category benchmark (top-quartile accounts launch ~189 new ads/week).</li>
+        <li><b>Turn the new offer lander into a true advertorial</b>, and add a low-friction trial pack to reduce entry risk.</li>
+        <li><b>Make price-comparison creative a permanent pillar</b> — own the value lane before Parasol or a retailer takes it.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 01 SCOREBOARD -->
+  <section>
+    <div class="sec-head"><span class="n">01</span><h2>The scoreboard</h2></div>
+    <p class="lead">Active-ad count is the clearest read on budget and testing velocity. Two competitors — <b>Millie Moon (~130)</b> and <b>Coterie (~120)</b> — run ~5× Freestyle's library. But Freestyle is moving: it grew from ~19 to <b>~26 ads in 8 days</b> and just launched a dedicated offer lander. It's still the smallest account <em>and</em> the cheapest product — its sharpest, least-contested weapon.</p>
+    <div class="board">
+      <div class="tile fs">
+        <div class="bname"><span class="dot"></span>Freestyle</div>
+        <div class="big">~26</div><div class="cap">active ads · $60–70/mo</div>
+        <div class="foot">Ramping fast — up from ~19 in 8 days. New dedicated offer lander live.<span class="tag">Value DTC</span></div>
+      </div>
+      <div class="tile mm">
+        <div class="bname"><span class="dot"></span>Millie Moon</div>
+        <div class="big">~130</div><div class="cap">active ads · retail-priced</div>
+        <div class="foot">Biggest spender. Drives to Target/Walmart, not DTC. Ms.&nbsp;Rachel tie-in.<span class="tag">Retail luxury</span></div>
+      </div>
+      <div class="tile cot">
+        <div class="bname"><span class="dot"></span>Coterie</div>
+        <div class="big">~120</div><div class="cap">active ads · $95/mo</div>
+        <div class="foot">Prestige leader. Widest catalog, 9,600+ reviews, evergreen winners.<span class="tag">Premium DTC</span></div>
+      </div>
+      <div class="tile pa">
+        <div class="bname"><span class="dot"></span>Parasol</div>
+        <div class="big">~60</div><div class="cap">~half diaper-focused · $84/mo</div>
+        <div class="foot">Scaling (~44 → ~60). Freestyle's twin — "RashShield" skin-first diapers + pants.<span class="tag">Skin-first DTC</span></div>
+      </div>
+      <div class="tile pe">
+        <div class="bname"><span class="dot"></span>Peachies <span style="font-weight:400;color:var(--ink-faint);font-size:11px">UK</span></div>
+        <div class="big">~43</div><div class="cap">active ads · £12 trial</div>
+        <div class="foot">Trial-led advertorial funnel. "UK's Best Nappy," proven since May.<span class="tag">Trial DTC</span></div>
+      </div>
+    </div>
+    <div class="bars">
+      <div class="bt">Active ads running · relative volume</div>
+      <div class="bar"><span class="bl">Millie Moon</span><div class="track"><div class="fill" style="width:100%;--bc:var(--mm)"></div></div><span class="bv">~130</span></div>
+      <div class="bar"><span class="bl">Coterie</span><div class="track"><div class="fill" style="width:92%;--bc:var(--cot)"></div></div><span class="bv">~120</span></div>
+      <div class="bar"><span class="bl">Parasol</span><div class="track"><div class="fill" style="width:46%;--bc:var(--pa)"></div></div><span class="bv">~60</span></div>
+      <div class="bar"><span class="bl">Peachies</span><div class="track"><div class="fill" style="width:33%;--bc:var(--pe)"></div></div><span class="bv">~43</span></div>
+      <div class="bar"><span class="bl">Freestyle</span><div class="track"><div class="fill" style="width:20%;--bc:var(--fs)"></div></div><span class="bv">~26</span></div>
+    </div>
+    <div class="note"><b>Volume context:</b> per Northbeam, the <b>top-25% performing ad accounts launched ~189 new ads/week</b> in Q1 2026. Every competitor here is testing at 2–5× Freestyle's active volume. Freestyle is closing the gap fast (+37% in 8 days) but is still the smallest; getting output up remains the precondition for everything else in this report.</div>
+  </section>
+
+  <!-- 02 TWO MODELS -->
+  <section>
+    <div class="sec-head"><span class="n">02</span><h2>Two games are being played</h2></div>
+    <p class="lead">The five brands split into two fundamentally different go-to-market models. Freestyle straddles them — DTC subscription with a toe in retail (Walmart) — which is an opportunity, not a problem, if pursued deliberately.</p>
+    <div class="models">
+      <div class="model">
+        <span class="mtag">Model A · DTC subscription</span>
+        <h3>Own the customer, sell the funnel</h3>
+        <p>Ads drive to owned pages (PDPs or advertorials), convert to a recurring subscription, and compete on funnel craft, offers, and LTV. Social proof and creative volume are the battleground.</p>
+        <div class="who"><span class="chip fs">Freestyle</span><span class="chip cot">Coterie</span><span class="chip pa">Parasol</span><span class="chip pe">Peachies</span></div>
+      </div>
+      <div class="model">
+        <span class="mtag">Model B · Retail omnichannel</span>
+        <h3>Drive the shelf, win on distribution</h3>
+        <p>Ads drive to <b>retailer</b> pages — Target, Walmart, Kroger, Publix, HEB — building brand demand that converts in-store. Competes on price-per-pack, availability, and licensed IP (Ms.&nbsp;Rachel), not subscription funnels.</p>
+        <div class="who"><span class="chip mm">Millie Moon</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 HEAD TO HEAD -->
+  <section>
+    <div class="sec-head"><span class="n">03</span><h2>Head-to-head</h2></div>
+    <p class="lead">Freestyle's column is tinted. Scroll horizontally for the full grid.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th scope="col">Dimension</th>
+          <th scope="col" class="fscol"><span class="colhead" style="--bc:var(--fs)">Freestyle</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--mm)">Millie Moon</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--cot)">Coterie</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--pa)">Parasol</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--pe)">Peachies</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><th scope="row">Active ads</th>
+            <td class="fscol num"><b>~26</b> <span class="muted">↑ was 19</span></td><td class="num"><b>~130</b></td><td class="num"><b>~120</b> <span class="muted">↑</span></td><td class="num"><b>~60</b> <span class="muted">~half diapers</span></td><td class="num"><b>~43</b> <span class="muted">(UK)</span></td></tr>
+          <tr><th scope="row">Model</th>
+            <td class="fscol">DTC sub + Walmart</td><td><b>Retail omnichannel</b></td><td>DTC subscription</td><td>DTC subscription</td><td>DTC trial → sub</td></tr>
+          <tr><th scope="row">Video share<small>sampled*</small></th>
+            <td class="fscol num"><b>69%</b></td><td class="num"><b>70%</b></td><td class="num"><b>~40%</b></td><td class="num"><b>24%</b> <span class="muted">static-heavy</span></td><td class="num"><b>46%</b></td></tr>
+          <tr><th scope="row">Landing strategy</th>
+            <td class="fscol">Hero PDP (~55%) + <b>new offer lander</b> (~35%) + Walmart</td><td><b>Retailer pages</b> — Target, Walmart, Kroger, Publix, HEB</td><td><b>6 product pages</b> — diaper, kit, skincare, 360°, wipe</td><td>RashShield <b>diaper + pants</b> PDPs (+ bibs)</td><td><b>Advertorial LP</b> "/upgrade-your-nappy-game" + £12 trial</td></tr>
+          <tr><th scope="row">Price</th>
+            <td class="fscol num"><b>$70</b>/mo <span class="muted">$59.50 w/ GET15 — cheapest</span></td><td class="num">~$0.25–0.30/diaper <span class="muted">retail, no sub</span></td><td class="num"><b>$95</b>/mo</td><td class="num"><b>$84</b>/mo combo</td><td class="num"><b>£12</b> trial · 20% sub</td></tr>
+          <tr><th scope="row">Social proof</th>
+            <td class="fscol num">1,450 · 4.7★ <span class="gap">weakest</span></td><td class="num">"97% say softer" <span class="muted">(11k survey)</span></td><td class="num"><b>9,627</b> · 4.7★</td><td class="num">Dermatest "Excellent"</td><td class="num">"98% recommend" · UK's Best Nappy '25</td></tr>
+          <tr><th scope="row">Signature creative</th>
+            <td class="fscol">Discount / value static</td><td><b>6-sec product video + Ms.&nbsp;Rachel IP</b></td><td><b>Press-quote static</b> ("Glamour: best diapers")</td><td>Long benefit-bullet static ("softest diaper, 4-cup absorbency")</td><td><b>"Why parents switch" + £12 trial</b></td></tr>
+          <tr><th scope="row">Lead offer</th>
+            <td class="fscol">50% off 1st mo (FIRST50) · <b>15% off/mo (GET15)</b></td><td>Retail price ($8.99 entry)</td><td>None — prestige + starter kit</td><td>20% off first order</td><td><b>£12 trial pack</b></td></tr>
+          <tr><th scope="row">Positioning</th>
+            <td class="fscol">Premium at a fair price</td><td>Cloud-soft luxury, accessible</td><td>Best-performing luxury</td><td>Skin-first, softest &amp; high-absorbency</td><td>Luxe-soft, switch &amp; save</td></tr>
+          <tr><th scope="row">Category range</th>
+            <td class="fscol">Diapers, wipes, (Walmart pants)</td><td>Diapers, training pants, wipes, bags</td><td><b>Diapers, wipes, skincare, 360°, kits</b></td><td><b>Diapers, diaper pants, bibs</b></td><td>Nappies, wipes, trial pack</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>* Method &amp; caveats.</b> Meta discloses no spend/impressions for commercial ads — "what's working" is inferred from <b>creative longevity + duplication</b>. Ad counts are exact (Ad Library result headers); video %, landing splits and cadence come from a clean, de-duplicated <b>~30-most-recent-ad sample</b> per brand (the library only renders ~30 at a time), so treat those as directional. Peachies data is from the <b>UK</b> library (no US presence). Millie Moon's per-diaper price is retail and varies by pack/SKU.</div>
+  </section>
+
+  <!-- 04 WHAT'S WORKING -->
+  <section>
+    <div class="sec-head"><span class="n">04</span><h2>What's working — creative level</h2></div>
+    <p class="lead">The single asset each competitor leans on hardest, by longevity and duplication, plus the plays beneath it.</p>
+    <div class="cards">
+      <div class="pcard mm">
+        <h3><span class="dot"></span>Millie Moon</h3>
+        <div class="role">Retail demand machine</div>
+        <div class="winner"><span class="wl">Workhorse format · ~20 launched in one day (Aug 1)</span><q>6-second "Diapers so soft they feel like a cloud ☁️ — at Target from $8.99."</q></div>
+        <ul>
+          <li><b>Short, cheap, high-volume video</b> — mostly 6-second product spots, produced at scale (~130 live).</li>
+          <li><b>Licensed IP:</b> a <b>Ms.&nbsp;Rachel</b> collaboration on training pants — borrowed audience + instant trust.</li>
+          <li><b>Softness + value + availability</b> — "CloudTouch™," "97% of parents say softer," always tied to a retailer and a low price.</li>
+          <li><b>Drives the shelf, not a funnel</b> — ads point to Target/Walmart/grocery, building demand that converts in-store.</li>
+        </ul>
+      </div>
+      <div class="pcard cot">
+        <h3><span class="dot"></span>Coterie</h3>
+        <div class="role">Proven-winner machine</div>
+        <div class="winner"><span class="wl">Workhorse · live 3+ months</span><q>"Glamour called us the best diapers on the market" — 10+ hrs, no leak.</q></div>
+        <ul>
+          <li><b>Press &amp; award social proof</b> as the durable, cheap-to-make backbone static.</li>
+          <li><b>Volume + catalog:</b> ~120 ads across diapers, wipes, 360° pants, skincare, kits.</li>
+          <li><b>&gt;50% of clicks go to non-diaper pages</b> — catalog monetization, not just the hero SKU.</li>
+          <li><b>Never discounts</b> — entry is the Newborn Starter Kit, not a coupon.</li>
+        </ul>
+      </div>
+      <div class="pcard pe">
+        <h3><span class="dot"></span>Peachies</h3>
+        <div class="role">Trial-led DR operator</div>
+        <div class="winner"><span class="wl">Workhorse · running since May (3+ months)</span><q>"Thinking of switching nappies? Here's why thousands switch… try for £12."</q></div>
+        <ul>
+          <li><b>Advertorial funnel:</b> most clicks hit "/lp/upgrade-your-nappy-game" (with a bottom-of-funnel variant), not a raw PDP.</li>
+          <li><b>£12 trial pack</b> is the entire hook — low-risk entry, then subscription.</li>
+          <li><b>Award + stat proof:</b> "UK's Best Nappy 2025," "98% recommend," "92% fewer leaks."</li>
+          <li><b>Switch/comparison framing</b> — positions against the incumbent the parent already uses.</li>
+        </ul>
+      </div>
+      <div class="pcard pa">
+        <h3><span class="dot"></span>Parasol</h3>
+        <div class="role">Freestyle's near-twin · diapers &amp; pants</div>
+        <div class="winner"><span class="wl">Diaper workhorse · scaled Aug 11, 4+ versions</span><q>"Meet the softest diaper built for real-life absorbency — a dual-core system that holds up to 4 cups of liquid."</q></div>
+        <ul>
+          <li><b>Positioning twin:</b> "<b>RashShield® skin-first</b>" vs. Freestyle's Skin♥Shield — same chlorine-free, Dermatest "Excellent," "zero nasties" story, near-identical name.</li>
+          <li><b>Diaper ads are ~93% static</b> — long benefit-bullet copy, almost no video.</li>
+          <li><b>Expanding the baby line:</b> RashShield <b>Diaper Pants</b> for crawlers/toddlers (their most-duplicated recent push) + disposable bibs.</li>
+          <li><b>20% off first order</b> is the standing diaper hook.</li>
+          <li><b>Watch:</b> a physician-designed <b>postpartum</b> line runs alongside — plausibly a pre-birth acquisition wedge that feeds future diaper customers.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 CONTENT-TYPE MATRIX -->
+  <section>
+    <div class="sec-head"><span class="n">05</span><h2>Content-type playbook — who runs what</h2></div>
+    <p class="lead"><span style="color:var(--good);font-weight:700">Signature</span> = defining format · <b>Core</b> = heavy use · Some = present · blank = absent. The empty cells in Freestyle's column are the fastest creative wins.</p>
+    <div class="scroll">
+      <table class="matrix">
+        <thead><tr><th scope="col" style="text-align:left">Creative format</th>
+          <th scope="col" class="fscol">Freestyle</th><th scope="col">Millie Moon</th><th scope="col">Coterie</th><th scope="col">Parasol</th><th scope="col">Peachies</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Offer / discount static</th><td class="fscol"><span class="lvl l-sig">Signature</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-none">—</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-core">Core</span></td></tr>
+          <tr><th scope="row">Press / award social proof</th><td class="fscol"><span class="lvl l-none">—</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-sig">Signature</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-core">Core</span></td></tr>
+          <tr><th scope="row">Short product video (≤15s)</th><td class="fscol"><span class="lvl l-some">Some</span></td><td><span class="lvl l-sig">Signature</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-none">—</span></td><td><span class="lvl l-some">Some</span></td></tr>
+          <tr><th scope="row">Long benefit-bullet static</th><td class="fscol"><span class="lvl l-some">Some</span></td><td><span class="lvl l-core">Core</span></td><td><span class="lvl l-core">Core</span></td><td><span class="lvl l-sig">Signature</span></td><td><span class="lvl l-core">Core</span></td></tr>
+          <tr><th scope="row">Creator / UGC (whitelisted)</th><td class="fscol"><span class="lvl l-some">New</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-some">Some</span></td><td><span class="lvl l-some">Some</span></td></tr>
+          <tr><th scope="row">Licensed IP / character</th><td class="fscol"><span class="lvl l-none">—</span></td><td><span class="lvl l-sig">Signature</span></td><td><span class="lvl l-none">—</span></td><td><span class="lvl l-none">—</span></td><td><span class="lvl l-none">—</span></td></tr>
+          <tr><th scope="row">Switch / comparison angle</th><td class="fscol"><span class="lvl l-none">—</span></td><td><span class="lvl l-none">—</span></td><td><span class="lvl l-none">—</span></td><td><span class="lvl l-none">—</span></td><td><span class="lvl l-sig">Signature</span></td></tr>
+          <tr><th scope="row">Line expansion (pants / wipes / kits)</th><td class="fscol"><span class="lvl l-some">Some</span></td><td><span class="lvl l-core">Core</span></td><td><span class="lvl l-sig">Signature</span></td><td><span class="lvl l-core">Core</span></td><td><span class="lvl l-some">Some</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 06 FUNNEL -->
+  <section>
+    <div class="sec-head"><span class="n">06</span><h2>The funnel behind the click</h2></div>
+    <p class="lead">Four different destination philosophies. Freestyle's single-PDP approach is the outlier — and the highest-leverage fix.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th scope="col">Funnel element</th>
+          <th scope="col" class="fscol"><span class="colhead" style="--bc:var(--fs)">Freestyle</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--mm)">Millie Moon</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--cot)">Coterie</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--pa)">Parasol</span></th>
+          <th scope="col"><span class="colhead" style="--bc:var(--pe)">Peachies</span></th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Destination type</th><td class="fscol">PDP + <b>new offer lander</b></td><td>Retailer pages</td><td>Product PDPs</td><td>RashShield diaper + pants PDPs</td><td><b>Advertorial LP</b></td></tr>
+          <tr><th scope="row">Low-barrier entry</th><td class="fscol">50% off 1st mo (~$37)</td><td><b>$8.99 pack</b> at retail</td><td>Trial pack w/ sub</td><td>20% off first order</td><td><b>£12 trial pack</b></td></tr>
+          <tr><th scope="row">Cross-sell / AOV lever</th><td class="fscol">Wipes add-on</td><td>Pants, wipes, bags</td><td><b>Skincare, 360°, kits</b></td><td><b>Diaper pants, bibs</b></td><td>Subscription upsell</td></tr>
+          <tr><th scope="row">Signature funnel move</th><td class="fscol">On-page price framing</td><td>Ms.&nbsp;Rachel + "find in store"</td><td>Sizing quiz + starter kit</td><td>20% off + "zero nasties" proof</td><td><b>Trial → advertorial → sub</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>The through-line for Freestyle:</b> Peachies routes cold traffic through <b>advertorials</b> before the PDP; Coterie spreads clicks across a <b>catalog</b>; everyone offers a <b>cheap trial</b> ($8.99 / £12 / 20% off). Freestyle <b>just launched a dedicated offer lander</b> (go.freestyle.world, ~35% of ad clicks now) — the right instinct, but it's an <b>Unbounce promo page whose buttons bounce visitors straight to the main PDP</b> to convert: a pre-sell bridge, not a standalone funnel or an editorial advertorial. The site also still carries the <span class="gap">fewest reviews in the set</span>. Turning that bridge into a true advertorial + growing proof is the biggest remaining conversion lever.</div>
+  </section>
+
+  <!-- 07 RECOMMENDATIONS -->
+  <section>
+    <div class="sec-head"><span class="n">07</span><h2>Where Freestyle grows next</h2></div>
+    <p class="lead">Prioritized for ecommerce growth — each maps to a specific gap this five-brand set exposed.</p>
+    <div class="recs">
+      <div class="rec"><div class="rn">1</div><div><span class="pri p-now">Do now</span>
+        <h3>Keep ramping creative volume — good momentum, still ~5× behind</h3>
+        <p>Freestyle just grew ~19 → <b>~26 ads in 8 days</b> — real acceleration. But Millie Moon (~130) and Coterie (~120) still test at ~5× the scale, and Northbeam's top quartile launched <b>~189 ads/week</b>. Keep the production line running (brief → static + short video + UGC variants) and hold the weekly cadence; volume is the input that makes every rec below pay off.</p></div></div>
+      <div class="rec"><div class="rn">2</div><div><span class="pri p-now">Do now</span>
+        <h3>Extend the new lander into a real advertorial + add a trial pack</h3>
+        <p>Freestyle already stood up <b>go.freestyle.world</b> — a dedicated 15%-off offer lander now taking ~35% of clicks. Right instinct; next step is to make it a true <b>editorial advertorial</b> (hook → "why parents switch" story → comparison table vs. Coterie/Parasol → testimonials), like Peachies' "/upgrade-your-nappy-game." And add a <b>low-friction trial pack</b> — every competitor has a cheap entry ($8.99 retail, £12, 20% off); a trial beats a 50%-off <em>subscription</em> commitment on perceived risk.</p></div></div>
+      <div class="rec"><div class="rn">3</div><div><span class="pri p-now">Do now</span>
+        <h3>Out-position Parasol &amp; win the value lane outright</h3>
+        <p>Parasol is your near-clone — "RashShield skin-first" vs. your "Skin♥Shield" — but sits at <b>$84</b> to your <b>$70</b> ($59.50 with GET15), and Coterie at $95. And Parasol is <b>scaling its RashShield diaper + pants line</b> (total ~44 → ~60 ads), so the window matters. Make explicit <b>price-comparison creative</b> a permanent pillar (same EWG/TCF/absorbency credentials, meaningfully cheaper). You own the value lane; defend it before Parasol or a retail brand takes it.</p></div></div>
+      <div class="rec"><div class="rn">4</div><div><span class="pri p-next">Do next</span>
+        <h3>Close the social-proof gap &amp; add award/press proof</h3>
+        <p>At <b>1,450 reviews</b> you have the least proof on the most-trafficked page, while Coterie (press quote) and Peachies ("UK's Best Nappy," 98% recommend) run <b>proof as their signature format</b>. Aggressively grow reviews and land one award/press mention to build the same cheap, months-long-running static.</p></div></div>
+      <div class="rec"><div class="rn">5</div><div><span class="pri p-next">Do next</span>
+        <h3>Expand the catalog — diapers-only is leaving money on the table</h3>
+        <p>Coterie monetizes skincare + kits, Millie Moon added <b>Ms.&nbsp;Rachel training pants</b>, Parasol added <b>diaper pants + bibs</b>. Freestyle's training pants have <b>no DTC PDP</b> (Walmart only) and wipes only just got one. Build dedicated <b>PDPs + bundles</b> and a low-friction <b>trial/starter kit</b> to lift AOV and widen the funnel — and, as an acquisition play, weigh a pre-birth SKU (the wedge Parasol runs) to capture parents before the diaper decision is made.</p></div></div>
+      <div class="rec"><div class="rn">6</div><div><span class="pri p-next">Do next</span>
+        <h3>Decide the retail question deliberately</h3>
+        <p>Millie Moon proves a <b>retail-first ad model</b> (drive to Target/Walmart) can out-scale DTC on volume. Freestyle already sells training pants on Walmart. Either lean in — run retail-driving ads and pursue shelf placement — or consciously stay DTC-pure. Right now it's half-in by accident; make it a strategy.</p></div></div>
+    </div>
+  </section>
+  </div><!-- /panel-deepdive -->
+
+  <div class="panel" id="panel-tracker" hidden>
+    <section style="margin-top:30px">
+      <div class="sec-head"><span class="n">◆</span><h2>Weekly tracker</h2></div>
+      <p class="lead">A running snapshot of each brand's active Meta ad library, refreshed each week — so you can watch volume trends, the improvements Freestyle is shipping, and the new creative competitors are scaling. Newest data on top.</p>
+      <div class="tk-latest" id="tk-summary"></div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="n">A</span><h2>Active ads over time</h2></div>
+      <div class="bars"><div id="tk-chart"></div><div class="tk-legend" id="tk-legend"></div></div>
+      <div class="scroll" style="margin-top:16px"><table id="tk-table"></table></div>
+      <div class="note"><b>Reading it:</b> counts are exact Ad-Library result-header figures. Freestyle &amp; Coterie have a true earlier baseline; Millie Moon, Parasol &amp; Peachies entered tracking this cycle, so their first delta reflects intra-period movement. From next week every delta is clean week-over-week.</div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="n">B</span><h2>What moved this week</h2></div>
+      <div id="tk-log" class="tk-log"></div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="n">C</span><h2>Freestyle progress watch</h2></div>
+      <p class="lead">The scoreboard that matters most: what Freestyle improved, and the gaps still open.</p>
+      <div id="tk-fs" class="tk-fs"></div>
+    </section>
+  </div><!-- /panel-tracker -->
+
+  <footer>
+    <p><b>Method.</b> Pulled from Meta Ad Library (active ads) on Aug 20, 2026 via per-advertiser page views; site funnels analyzed directly. Ad counts are exact result-header figures; format/landing/cadence are from a de-duplicated ~30-most-recent-ad sample per brand (Ad Library renders ~30 at a time). Pages: Millie Moon #101279554883806 · Coterie #2182924185284843 · Parasol Co #399455110215039 · Peachies (UK) #100666899530636 · Freestyle #111167971334113.</p>
+    <p><b>Caveats.</b> Meta reports no spend/impressions for commercial ads — performance = longevity + duplication proxies. Peachies analyzed in the UK library (no US ads). Millie Moon is retail-priced (per-pack, no subscription) so its price isn't directly comparable to monthly DTC plans. Review counts/prices captured from each brand's site on the snapshot date.</p>
+    <div class="kws">
+      <span class="kw">SkinShield vs RashShield</span><span class="kw">Ms. Rachel IP</span><span class="kw">£12 trial</span><span class="kw">advertorial funnel</span><span class="kw">retail omnichannel</span><span class="kw">RashShield diaper pants</span><span class="kw">price wedge $70</span><span class="kw">189 ads/wk benchmark</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // ==== WEEKLY SNAPSHOT DATA — append a new object each week, then republish ====
+  const SNAPSHOTS=[
+    {date:"Aug 12",counts:{Freestyle:19,"Millie Moon":130,Coterie:110,Parasol:44,Peachies:43}},
+    {date:"Aug 20",counts:{Freestyle:26,"Millie Moon":130,Coterie:120,Parasol:60,Peachies:43},notes:{
+      Freestyle:"+7 ads (19→26), the fastest mover. Launched go.freestyle.world — an Unbounce offer lander (15% off/mo, code GET15); ~35% of clicks now route there instead of the single PDP. Added a wipes PDP; creator UGC still ramping.",
+      "Millie Moon":"Flat at ~130 (volume leader). The Aug 1 batch (~20 ads) still dominates; Ms. Rachel training-pants tie-in continuing. Retail-driving model (Target / Walmart / grocery) unchanged.",
+      Coterie:"+10 ads (110→120). The 'Glamour: best diapers' press static is still the evergreen workhorse; steady weekly refresh; clicks stay spread across the full catalog.",
+      Parasol:"Diaper line scaling (~44→~60 total, ~half diaper-focused). Pushing RashShield Diaper Pants (Aug 11, 4+ variants) + disposable bibs (Aug 17). Static-heavy, 20%-off-first-order hook.",
+      Peachies:"Flat at ~43 (UK). The £12-trial 'why parents switch' advertorial funnel — live since May — is still the backbone; no structural change."
+    }}
+  ];
+  const FS_PROGRESS=[
+    {k:"Volume",v:"~26 active ads",n:"Up +37% from ~19 in 8 days. Still ~5× behind Millie Moon / Coterie, but closing fast.",d:"up"},
+    {k:"Funnel",v:"Offer lander live",n:"go.freestyle.world (Unbounce) now takes ~35% of clicks — first move off single-PDP dependence. Next: turn the bridge into a real advertorial.",d:"up"},
+    {k:"Offer",v:"GET15 → $59.50/mo",n:"New 15%-off-every-month code makes Freestyle the cheapest effective price in the set (alongside the FIRST50 50%-off-first-month).",d:"up"},
+    {k:"Catalog",v:"Wipes PDP added",n:"Training pants are still Walmart-only (no DTC PDP). Room for bundles + a trial / starter kit.",d:"flat"},
+    {k:"Social proof",v:"~1,450 reviews",n:"Still the fewest in the set (Coterie ~9,600). The biggest unaddressed gap.",d:"gap"}
+  ];
+  // ==============================================================================
+  const COLORS={Freestyle:"--fs","Millie Moon":"--mm",Coterie:"--cot",Parasol:"--pa",Peachies:"--pe"};
+  const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  function chart(){
+    const W=760,H=300,pL=42,pR=24,pT=16,pB=34,n=SNAPSHOTS.length,maxV=150;
+    const X=i=>pL+(n<2?0:i*(W-pL-pR)/(n-1));
+    const Y=v=>pT+(1-v/maxV)*(H-pT-pB);
+    let g="";
+    for(let t=0;t<=120;t+=40){g+='<line x1="'+pL+'" y1="'+Y(t)+'" x2="'+(W-pR)+'" y2="'+Y(t)+'" style="stroke:var(--line)" stroke-width="1"/><text x="'+(pL-8)+'" y="'+(Y(t)+4)+'" text-anchor="end" style="fill:var(--ink-faint)" font-size="11" font-family="monospace">'+t+'</text>';}
+    SNAPSHOTS.forEach((s,i)=>{g+='<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" style="fill:var(--ink-faint)" font-size="11" font-family="monospace">'+esc(s.date)+'</text>';});
+    Object.keys(COLORS).forEach(b=>{
+      const col="var("+COLORS[b]+")";
+      const pts=SNAPSHOTS.map((s,i)=>[X(i),Y(s.counts[b])]);
+      g+='<path d="'+pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")+'" fill="none" style="stroke:'+col+'" stroke-width="2.5"/>';
+      pts.forEach(p=>{g+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.5" style="fill:'+col+'"/>';});
+    });
+    return '<svg class="tk-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Active ads over time by brand">'+g+'</svg>';
+  }
+  function legend(){return Object.keys(COLORS).map(b=>'<span><i style="background:var('+COLORS[b]+')"></i>'+esc(b)+'</span>').join("");}
+  function table(){
+    let h='<thead><tr><th scope="col">Brand</th>'+SNAPSHOTS.map(s=>'<th scope="col">'+esc(s.date)+'</th>').join("")+'<th scope="col">Δ latest</th></tr></thead><tbody>';
+    Object.keys(COLORS).forEach(b=>{
+      const ser=SNAPSHOTS.map(s=>s.counts[b]);const prev=ser[ser.length-2],now=ser[ser.length-1];
+      const dd=(prev==null)?0:now-prev;const cls=dd>0?"up":dd<0?"down":"flatc";const ar=dd>0?"▲":dd<0?"▼":"—";
+      h+='<tr><th scope="row"><span class="tk-swatch" style="background:var('+COLORS[b]+')"></span>'+esc(b)+'</th>'+ser.map(v=>'<td class="num">~'+v+'</td>').join("")+'<td class="num tk-delta '+cls+'">'+ar+" "+(dd>0?"+":"")+dd+'</td></tr>';
+    });
+    return h+"</tbody>";
+  }
+  function summary(){
+    const l=SNAPSHOTS[SNAPSHOTS.length-1],p=SNAPSHOTS[SNAPSHOTS.length-2]||l;
+    return '<b>Snapshot — '+esc(l.date)+', 2026.</b> Freestyle is at <b>~'+l.counts.Freestyle+' active ads</b> (up from ~'+p.counts.Freestyle+') — the fastest mover this cycle. Millie Moon (~'+l.counts["Millie Moon"]+') and Coterie (~'+l.counts.Coterie+') still lead on raw volume; Parasol is scaling its diaper line (~'+p.counts.Parasol+'→~'+l.counts.Parasol+'); Peachies holds steady (~'+l.counts.Peachies+', UK). Detail below.';
+  }
+  function log(){
+    const notes=SNAPSHOTS[SNAPSHOTS.length-1].notes||{};
+    return Object.keys(COLORS).map(b=>'<div class="tk-item" style="--bc:var('+COLORS[b]+')"><h4><span class="d"></span>'+esc(b)+'</h4><p>'+esc(notes[b]||"No change.")+'</p></div>').join("");
+  }
+  function fsWatch(){
+    return FS_PROGRESS.map(r=>'<div class="tk-frow"><div class="mk">'+esc(r.k)+'</div><div class="nb"><b>'+esc(r.v)+'</b> — '+esc(r.n)+'</div><div><span class="badge '+r.d+'">'+(r.d==="up"?"improved":r.d==="gap"?"gap":"steady")+'</span></div></div>').join("");
+  }
+  function put(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html;}
+  put("tk-summary",summary());put("tk-chart",chart());put("tk-legend",legend());put("tk-table",table());put("tk-log",log());put("tk-fs",fsWatch());
+
+  document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",function(){
+    document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",x===t?"true":"false"));
+    document.querySelectorAll(".panel").forEach(p=>{p.hidden=(p.id!==t.dataset.panel);});
+    try{window.scrollTo(0,0);}catch(e){}
+  }));
+})();
+</script>
+</body>
+</html>
