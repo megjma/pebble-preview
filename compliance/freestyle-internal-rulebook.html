@@ -123,6 +123,18 @@
   .note { background: var(--note-bg); border-radius: 12px; padding: 14px 18px; margin: 16px 0; font-size: 15px; }
   .note strong { color: var(--accent); }
 
+  .own { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; margin-top: 14px; }
+  @media (max-width: 620px) { .own { grid-template-columns: 1fr; } }
+  .own .side { border-radius: 14px; border: 1px solid var(--line); overflow: hidden; }
+  .own .side header { padding: 11px 18px; font-weight: 800; font-family: 'Bricolage Grotesque', sans-serif; font-size: 16px; }
+  .own .side.us header { background: var(--accent-soft); color: var(--accent); }
+  .own .side.them header { background: var(--yes-bg); color: var(--yes); }
+  .own .side ul { margin: 0; padding: 12px 18px 14px 34px; background: var(--card); }
+  .own .side li { margin: 7px 0; font-size: 14.5px; }
+  .own .side.us li::marker { color: var(--accent); }
+  .own .side.them li::marker { color: var(--yes); }
+  .own .side .foot { padding: 0 18px 14px; background: var(--card); font-size: 14px; color: var(--ink-soft); }
+
   ol.worry { margin: 12px 0 0; padding-left: 24px; }
   ol.worry li { margin: 9px 0; }
   ol.worry li::marker { font-weight: 800; color: var(--accent); }
@@ -134,9 +146,10 @@
 <div class="wrap">
   <div class="brand"><div class="dot">📕</div><span>Freestyle · Internal — Marketing &amp; Partnerships</span></div>
   <h1>The Freestyle <em>Rulebook</em></h1>
-  <p class="lede">Every advertising-compliance rule we follow internally, in one place: what we can claim, the words no one uses, how the creator program runs, and what regulators are watching. Companion pages: the Creator Playbook (full external guidelines), the 3 Rules (short creator brief), and the Responsibility Map (who owns what).</p>
+  <p class="lede">Every advertising-compliance rule we follow internally, in one place: what we can claim, the words no one uses, who owns which duties, how the creator program runs, and what regulators are watching. The creator-facing guidelines live as the signed exhibit in every Growi contract; the Contract Blueprint covers what goes into those agreements.</p>
   <nav class="toc">
     <a href="#regulators">Regulators</a>
+    <a href="#ownership">Who owns what</a>
     <a href="#claims">Claim rules</a>
     <a href="#danger">Danger words</a>
     <a href="#program">Creator program</a>
@@ -160,8 +173,45 @@
     </div>
   </section>
 
-  <section id="claims">
+  <section id="ownership">
     <p class="eyebrow">Part two</p>
+    <h2>Who owns what</h2>
+    <p class="section-intro">The FTC holds <strong>the brand</strong> responsible for creator content — even things a creator says that we never told them to say. So the structural work sits with us, and creators carry only three simple duties.</p>
+    <div class="own">
+      <div class="side us">
+        <header>Freestyle owns</header>
+        <ul>
+          <li><strong>Substantiation</strong> — current testing on file for every factual claim before it appears anywhere; retest on product or competitor changes</li>
+          <li><strong>The approved claims list</strong> — one canonical, versioned source of exact language</li>
+          <li><strong>Onboarding &amp; contracts</strong> — guidelines acknowledged in writing (the Growi e-sign exhibit) before the first post; FTC clause in every agreement</li>
+          <li><strong>Monitoring &amp; correction</strong> — rotating spot-checks, the 48-hour fix loop, everything logged</li>
+          <li><strong>Reviews Rule hygiene</strong> — nothing ever conditioned on sentiment; no undisclosed insider reviews; no suppression</li>
+          <li><strong>Employee policy &amp; our own ad copy</strong> — per Parts six and seven, plus legal review of campaign claims</li>
+        </ul>
+      </div>
+      <div class="side them">
+        <header>Creators own (3 things)</header>
+        <ul>
+          <li><strong>Disclose on every post</strong> — clearly, at the top, spoken in video; free product and commissions count</li>
+          <li><strong>Be honest</strong> — genuine use, genuine opinions</li>
+          <li><strong>Stay inside the lines</strong> — own experience in their own words; no danger words, stats, or competitor comparisons</li>
+        </ul>
+        <div class="foot">A creator who does these three has near-zero personal risk — the FTC pursues brands, not individual influencers, outside egregious repeat cases. Substantiation, the Green Guides, the FDA line, and the FCC are never their problem.</div>
+      </div>
+    </div>
+    <h3 style="margin-top:24px">The workflow the partnerships team runs</h3>
+    <ol class="worry">
+      <li><strong>Onboard</strong> — guidelines sent → e-signed acknowledgment via the Growi contract → records kept.</li>
+      <li><strong>Equip</strong> — current approved claims list shared; creators notified when it changes (briefs stay stat-free).</li>
+      <li><strong>Post</strong> — creator publishes with disclosure.</li>
+      <li><strong>Spot-check</strong> — rotating sample of tagged content against the checklist, every creator at least once per quarter.</li>
+      <li><strong>Fix</strong> — non-compliant post → correction request → confirmed within 48 hours → logged.</li>
+      <li><strong>Escalate</strong> — repeat issues pause the partnership (documented); borderline claims go to legal before posting.</li>
+    </ol>
+  </section>
+
+  <section id="claims">
+    <p class="eyebrow">Part three</p>
     <h2>Claim rules, by selling point</h2>
     <p class="section-intro">The master rule: every factual claim needs current substantiation on file <em>before</em> it ships, anywhere — packaging, site, ads, creator captions. Approved claims are used verbatim; a paraphrased substantiated claim is an unsubstantiated one.</p>
 
@@ -209,7 +259,7 @@
   </section>
 
   <section id="danger">
-    <p class="eyebrow">Part three</p>
+    <p class="eyebrow">Part four</p>
     <h2>The danger words</h2>
     <p class="section-intro">Banned in all copy — packaging, site, paid media, social captions, and creator content — unless legal signs off on a specific substantiated exception:</p>
     <div class="danger-box">
@@ -228,7 +278,7 @@
   </section>
 
   <section id="program">
-    <p class="eyebrow">Part four</p>
+    <p class="eyebrow">Part five</p>
     <h2>Creator program rules</h2>
     <p class="section-intro">We are legally liable for what creators post — including things we never told them to say. Free product and affiliate commissions both count as "material connections," so gifting-only and commission-only creators must disclose like paid ones. Our duties:</p>
     <div class="duty">
@@ -242,7 +292,7 @@
   </section>
 
   <section id="reviews">
-    <p class="eyebrow">Part five</p>
+    <p class="eyebrow">Part six</p>
     <h2>Reviews (the 2024 Reviews Rule)</h2>
     <p class="section-intro">Civil penalties run ~$50k+ per violation, and this rule reaches marketing ops directly:</p>
     <ul class="plain">
@@ -255,7 +305,7 @@
   </section>
 
   <section id="employees">
-    <p class="eyebrow">Part six</p>
+    <p class="eyebrow">Part seven</p>
     <h2>Employees &amp; family</h2>
     <ul class="plain">
       <li>Any employee — or their immediate family — posting about Freestyle discloses the employment relationship, every time ("I work at Freestyle" / "my partner works at Freestyle").</li>
@@ -266,7 +316,7 @@
   </section>
 
   <section id="worry">
-    <p class="eyebrow">Part seven</p>
+    <p class="eyebrow">Part eight</p>
     <h2>The worry list, ranked</h2>
     <ol class="worry">
       <li><strong>Comparative absorbency claims</strong> — the most likely NAD challenge from P&amp;G/Kimberly-Clark. Substantiation file airtight and current, always.</li>
