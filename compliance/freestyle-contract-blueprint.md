@@ -39,6 +39,8 @@
 
 *Compliance notes for whoever writes each month's bonus:* (1) qualify posts by **format and use**, never tone — "3 great posts about how much you love Freestyle" is an illegal incentive; "3 videos showing Freestyle in use" is a clean one; (2) bonuses are compensation, so the disclosure duty on every post is unchanged.
 
+*The pre-publish ritual:* before any bonus goes live, do the 30-second worst-case math — "$50 for 3 videos" × 100-creator roster = $5,000 absolute ceiling, realistically $1,000–1,500 at a 20–30% hit rate. If the ceiling would hurt, restructure as a top-N contest **before** publishing; never shrink a promise after the fact. And keep the safety valve in mind: if a volume bonus blows past forecast, we got flooded with in-use videos at ~$17–25 apiece — the cheapest content acquisition in the entire program, not a budget failure.
+
 **Compensation must never:** be conditioned on positive sentiment, a good review, or "loving it" (in the contract, Growi settings, or any DM); pay for retail reviews; or penalize honest, less-than-glowing content.
 
 ## Part 3 — Setup mechanics in Growi
