@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Freestyle Rulebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+  :root {
+    --paper: #F7F3EC;
+    --card: #FFFFFF;
+    --ink: #222B24;
+    --ink-soft: #5C665E;
+    --line: #E2DACC;
+    --accent: #E8622C;
+    --accent-soft: #FBEAE0;
+    --bamboo: #3E8E5F;
+    --yes: #2F7D4F;
+    --yes-bg: #EAF3EC;
+    --no: #B3392F;
+    --no-bg: #F9ECE9;
+    --note-bg: #F1EDE3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #191E1A;
+      --card: #222823;
+      --ink: #ECEAE2;
+      --ink-soft: #A6ADA5;
+      --line: #38403A;
+      --accent: #F07A45;
+      --accent-soft: #35281F;
+      --bamboo: #66B287;
+      --yes: #6FBE8F;
+      --yes-bg: #23301F;
+      --no: #E08175;
+      --no-bg: #362321;
+      --note-bg: #262C25;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #191E1A;
+    --card: #222823;
+    --ink: #ECEAE2;
+    --ink-soft: #A6ADA5;
+    --line: #38403A;
+    --accent: #F07A45;
+    --accent-soft: #35281F;
+    --bamboo: #66B287;
+    --yes: #6FBE8F;
+    --yes-bg: #23301F;
+    --no: #E08175;
+    --no-bg: #362321;
+    --note-bg: #262C25;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Figtree', 'Avenir Next', 'Segoe UI', sans-serif;
+    font-size: 16.5px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 40px 22px 90px; }
+  h1, h2, h3 { font-family: 'Bricolage Grotesque', 'Figtree', sans-serif; text-wrap: balance; }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+  .brand .dot {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bamboo); color: #fff;
+    display: grid; place-items: center; font-size: 17px; flex: none;
+  }
+  .brand span { font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; color: var(--ink-soft); }
+  h1 { font-size: clamp(32px, 6vw, 46px); font-weight: 800; line-height: 1.06; margin: 0 0 14px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: 18px; color: var(--ink-soft); max-width: 60ch; margin: 0 0 22px; }
+
+  nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  nav.toc a {
+    font-size: 13.5px; font-weight: 700; color: var(--accent); text-decoration: none;
+    background: var(--accent-soft); border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px;
+  }
+  nav.toc a:hover, nav.toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  section { margin-top: 52px; scroll-margin-top: 20px; }
+  .eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  h2 { font-size: 26px; font-weight: 700; margin: 0 0 8px; }
+  h3 { font-size: 18px; font-weight: 700; margin: 24px 0 8px; }
+  .section-intro { color: var(--ink-soft); margin: 0 0 18px; max-width: 64ch; }
+  p { max-width: 68ch; }
+  ul.plain { padding-left: 20px; margin: 8px 0; }
+  ul.plain li { margin: 6px 0; }
+
+  .table-scroll { overflow-x: auto; margin: 14px 0 6px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14.5px; background: var(--card); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); background: var(--note-bg); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 700; white-space: nowrap; }
+
+  .claim {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px 20px 14px; margin: 14px 0;
+  }
+  .claim h3 { margin: 0 0 8px; font-size: 17px; }
+  .claim .ok, .claim .ban { border-radius: 10px; padding: 9px 14px; font-size: 14.5px; margin: 8px 0; border: 1px solid var(--line); }
+  .claim .ok  { background: var(--yes-bg); border-left: 4px solid var(--yes); }
+  .claim .ban { background: var(--no-bg);  border-left: 4px solid var(--no); }
+  .claim .ok b  { color: var(--yes); }
+  .claim .ban b { color: var(--no); }
+  .claim .why { font-size: 14px; color: var(--ink-soft); margin: 8px 0 0; }
+
+  .danger-box { background: var(--no-bg); border: 1px solid var(--line); border-left: 4px solid var(--no); border-radius: 14px; padding: 16px 20px; margin-top: 14px; }
+  .danger-box .tag { font-weight: 800; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--no); }
+  .danger-box ul { columns: 2; column-gap: 20px; margin: 8px 0 0; padding-left: 20px; font-size: 15px; }
+  @media (max-width: 520px) { .danger-box ul { columns: 1; } }
+  .danger-box li { margin: 4px 0; break-inside: avoid; }
+  .danger-box li::marker { color: var(--no); }
+
+  .duty { display: grid; gap: 10px; margin-top: 14px; }
+  .duty-item {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: 15px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .duty-item::before { content: "✔"; color: var(--bamboo); font-weight: 800; margin-top: 1px; }
+  .duty-item strong { display: block; font-size: 15.5px; }
+  .duty-item span { color: var(--ink-soft); font-size: 14.5px; }
+
+  .note { background: var(--note-bg); border-radius: 12px; padding: 14px 18px; margin: 16px 0; font-size: 15px; }
+  .note strong { color: var(--accent); }
+
+  .own { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; margin-top: 14px; }
+  @media (max-width: 620px) { .own { grid-template-columns: 1fr; } }
+  .own .side { border-radius: 14px; border: 1px solid var(--line); overflow: hidden; }
+  .own .side header { padding: 11px 18px; font-weight: 800; font-family: 'Bricolage Grotesque', sans-serif; font-size: 16px; }
+  .own .side.us header { background: var(--accent-soft); color: var(--accent); }
+  .own .side.them header { background: var(--yes-bg); color: var(--yes); }
+  .own .side ul { margin: 0; padding: 12px 18px 14px 34px; background: var(--card); }
+  .own .side li { margin: 7px 0; font-size: 14.5px; }
+  .own .side.us li::marker { color: var(--accent); }
+  .own .side.them li::marker { color: var(--yes); }
+  .own .side .foot { padding: 0 18px 14px; background: var(--card); font-size: 14px; color: var(--ink-soft); }
+
+  ol.worry { margin: 12px 0 0; padding-left: 24px; }
+  ol.worry li { margin: 9px 0; }
+  ol.worry li::marker { font-weight: 800; color: var(--accent); }
+
+  footer { margin-top: 48px; font-size: 13px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 18px; }
+  footer p { max-width: none; margin: 6px 0; }
+</style>
+</head>
+<body>
+<nav style="display:flex; gap:22px; justify-content:center; padding:12px 16px; border-bottom:1px solid var(--line); font-family: 'Figtree', sans-serif; font-size:13.5px; letter-spacing:.04em; text-transform:uppercase; background: var(--card);"><a href="index.html" style="color: var(--ink-soft); text-decoration: none; font-weight:600;">Proposal</a><span style="font-weight:700; color: var(--accent);">Rulebook</span><a href="contract-blueprint.html" style="color: var(--ink-soft); text-decoration: none; font-weight:600;">Contract Blueprint</a></nav>
+
+<div class="wrap">
+  <div class="brand"><div class="dot">📕</div><span>Freestyle · Internal — Marketing &amp; Partnerships</span></div>
+  <h1>The Freestyle <em>Rulebook</em></h1>
+  <p class="lede">Every advertising-compliance rule we follow internally, in one place: what we can claim, the words no one uses, who owns which duties, how the creator program runs, and what regulators are watching. The creator-facing guidelines live as the signed exhibit in every Growi contract; the Contract Blueprint covers what goes into those agreements.</p>
+  <nav class="toc">
+    <a href="#regulators">Regulators</a>
+    <a href="#ownership">Who owns what</a>
+    <a href="#claims">Claim rules</a>
+    <a href="#danger">Danger words</a>
+    <a href="#program">Creator program</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#employees">Employees</a>
+    <a href="#worry">Worry list</a>
+  </nav>
+
+  <section id="regulators">
+    <p class="eyebrow">Part one</p>
+    <h2>Who's watching</h2>
+    <div class="table-scroll">
+      <table>
+        <tr><th>Body</th><th>What they police</th><th>Our exposure</th></tr>
+        <tr><td>FTC</td><td>Deceptive/unsubstantiated ads (FTC Act §5), endorsements &amp; influencers (Endorsement Guides, rev. 2023), fake/incentivized reviews (Reviews Rule, 2024), eco claims (Green Guides)</td><td><strong>Primary regulator.</strong> All product claims, all creator content, all reviews</td></tr>
+        <tr><td>FDA</td><td>Drug claims — "prevents/treats diaper rash" is reserved for OTC skin-protectant drugs (zinc oxide etc.), not diapers</td><td>The line between "keeps skin dry" (ours to use) and "prevents rash" (never)</td></tr>
+        <tr><td>FCC</td><td>Broadcast radio/TV sponsorship identification only</td><td>Irrelevant unless we buy radio/TV spots. Social + podcasts = FTC</td></tr>
+        <tr><td>NAD (BBB)</td><td>Competitor challenges to ad claims; losses get referred to the FTC</td><td><strong>Active in diapers</strong> — P&amp;G beat Coterie here in 2025 over absorbency claims</td></tr>
+        <tr><td>Class actions / state AGs</td><td>State consumer-protection suits</td><td>Huggies is defending a "hypoallergenic" class action right now</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="ownership">
+    <p class="eyebrow">Part two</p>
+    <h2>Who owns what</h2>
+    <p class="section-intro">The FTC holds <strong>the brand</strong> responsible for creator content — even things a creator says that we never told them to say. So the structural work sits with us, and creators carry only three simple duties.</p>
+    <div class="own">
+      <div class="side us">
+        <header>Freestyle owns</header>
+        <ul>
+          <li><strong>Substantiation</strong> — current testing on file for every factual claim before it appears anywhere; retest on product or competitor changes</li>
+          <li><strong>The approved claims list</strong> — one canonical, versioned source of exact language</li>
+          <li><strong>Onboarding &amp; contracts</strong> — guidelines acknowledged in writing (the Growi e-sign exhibit) before the first post; FTC clause in every agreement</li>
+          <li><strong>Monitoring &amp; correction</strong> — rotating spot-checks, the 48-hour fix loop, everything logged</li>
+          <li><strong>Reviews Rule hygiene</strong> — nothing ever conditioned on sentiment; no undisclosed insider reviews; no suppression</li>
+          <li><strong>Employee policy &amp; our own ad copy</strong> — per Parts six and seven, plus legal review of campaign claims</li>
+        </ul>
+      </div>
+      <div class="side them">
+        <header>Creators own (3 things)</header>
+        <ul>
+          <li><strong>Disclose on every post</strong> — clearly, at the top, spoken in video; free product and commissions count</li>
+          <li><strong>Be honest</strong> — genuine use, genuine opinions</li>
+          <li><strong>Stay inside the lines</strong> — own experience in their own words; no danger words, stats, or competitor comparisons</li>
+        </ul>
+        <div class="foot">A creator who does these three has near-zero personal risk — the FTC pursues brands, not individual influencers, outside egregious repeat cases. Substantiation, the Green Guides, the FDA line, and the FCC are never their problem.</div>
+      </div>
+    </div>
+    <h3 style="margin-top:24px">The workflow the partnerships team runs</h3>
+    <ol class="worry">
+      <li><strong>Onboard</strong> — guidelines sent → e-signed acknowledgment via the Growi contract → records kept.</li>
+      <li><strong>Equip</strong> — current approved claims list shared; creators notified when it changes (briefs stay stat-free).</li>
+      <li><strong>Post</strong> — creator publishes with disclosure.</li>
+      <li><strong>Spot-check</strong> — rotating sample of tagged content against the checklist, every creator at least once per quarter.</li>
+      <li><strong>Fix</strong> — non-compliant post → correction request → confirmed within 48 hours → logged.</li>
+      <li><strong>Escalate</strong> — repeat issues pause the partnership (documented); borderline claims go to legal before posting.</li>
+    </ol>
+  </section>
+
+  <section id="claims">
+    <p class="eyebrow">Part three</p>
+    <h2>Claim rules, by selling point</h2>
+    <p class="section-intro">The master rule: every factual claim needs current substantiation on file <em>before</em> it ships, anywhere — packaging, site, ads, creator captions. Approved claims are used verbatim; a paraphrased substantiated claim is an unsubstantiated one.</p>
+
+    <div class="claim">
+      <h3>Absorbency ("55% more absorbent than the #1 brand")</h3>
+      <div class="ok"><b>Allowed:</b> the exact tested claim, with the basis of comparison disclosed near it ("vs. [brand], size X, [test]") — and only while the testing is current.</div>
+      <div class="ban"><b>Never:</b> "most absorbent on the market," rounded numbers, "up to" stretching, comparing our best size against a competitor's weakest, or letting creators restate the stat in their own words.</div>
+      <p class="why">Why: NAD killed Coterie's "up to 4x vs. leading brands" because the testing didn't match the words. Define "#1 brand" precisely; retest when we or competitors change product. Expect P&amp;G or Kimberly-Clark to challenge us the same way.</p>
+    </div>
+
+    <div class="claim">
+      <h3>Bamboo &amp; plant-based (BambooTek™)</h3>
+      <div class="ok"><b>Allowed:</b> "core made from 100% bamboo pulp" — qualified to the component it's true of.</div>
+      <div class="ban"><b>Never:</b> implying the whole diaper is bamboo or plant-based, "all-natural," or unqualified "plant-based" without saying which parts.</div>
+      <p class="why">Why: closures, SAP, and backsheet aren't bamboo. Unqualified material claims draw Green Guides scrutiny.</p>
+    </div>
+
+    <div class="claim">
+      <h3>Free-of &amp; non-toxic</h3>
+      <div class="ok"><b>Allowed:</b> specific free-of statements with testing on file ("free of fragrances and phthalates"), re-verified on every material or supplier change.</div>
+      <div class="ban"><b>Never:</b> "chemical-free," safety scare comparisons ("other diapers are toxic"), or keeping "free of allergens"/"hypoallergenic" language live after a composition change without re-testing.</div>
+      <p class="why">Why: the Huggies class action is exactly this — a quiet materials change under a standing "hypoallergenic" label. Lock change-control between R&amp;D and marketing.</p>
+    </div>
+
+    <div class="claim">
+      <h3>Skin &amp; diaper rash</h3>
+      <div class="ok"><b>Allowed:</b> "helps keep skin dry," "designed for sensitive skin," dryness-mechanism framing.</div>
+      <div class="ban"><b>Never:</b> "prevents / treats / cures diaper rash" or any medical outcome; "dermatologist-tested / pediatrician-approved" without the study on file.</div>
+      <p class="why">Why: prevent/treat/cure language makes the diaper an unapproved drug under the FDA's skin-protectant monograph. One word separates a product claim from a drug claim.</p>
+    </div>
+
+    <div class="claim">
+      <h3>Environmental</h3>
+      <div class="ok"><b>Allowed:</b> specific, qualified facts — "the core is bamboo, a fast-growing plant"; quantified claims ("X% less plastic than…") only with a documented baseline.</div>
+      <div class="ban"><b>Never:</b> biodegradable, compostable, eco-friendly, sustainable, zero-waste, "good for the planet," flushable, "saves trees" without numbers.</div>
+      <p class="why">Why: gDiapers settled FTC charges over "biodegradable"/"flushable" diapers. We currently hold no substantiation for general environmental-benefit claims.</p>
+    </div>
+
+    <div class="claim">
+      <h3>Safety &amp; superlatives</h3>
+      <div class="ok"><b>Allowed:</b> factual, tested statements about our own product.</div>
+      <div class="ban"><b>Never:</b> "safest diaper," "no harmful ingredients whatsoever," "the only diaper you can trust," or anything implying competitors hurt babies.</div>
+      <p class="why">Why: absolute safety is unsubstantiable, and implied-safety superiority is exactly what BBB National Programs flagged in infant-care advertising guidance.</p>
+    </div>
+  </section>
+
+  <section id="danger">
+    <p class="eyebrow">Part four</p>
+    <h2>The danger words</h2>
+    <p class="section-intro">Banned in all copy — packaging, site, paid media, social captions, and creator content — unless legal signs off on a specific substantiated exception:</p>
+    <div class="danger-box">
+      <span class="tag">Never, anywhere</span>
+      <ul>
+        <li>prevents / treats / cures / heals (any condition)</li>
+        <li>hypoallergenic · free of allergens (without current testing + legal sign-off)</li>
+        <li>chemical-free · 100% natural · all-natural</li>
+        <li>biodegradable · compostable · eco-friendly · sustainable</li>
+        <li>flushable</li>
+        <li>safest · guaranteed · never leaks</li>
+        <li>doctor / dermatologist / pediatrician recommended (no study on file)</li>
+        <li>unapproved competitor comparisons or made-up statistics</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="program">
+    <p class="eyebrow">Part five</p>
+    <h2>Creator program rules</h2>
+    <p class="section-intro">We are legally liable for what creators post — including things we never told them to say. Free product and affiliate commissions both count as "material connections," so gifting-only and commission-only creators must disclose like paid ones. Our duties:</p>
+    <div class="duty">
+      <div class="duty-item"><div><strong>Guidelines before the first post</strong><span>Every creator receives the Playbook (or 3 Rules brief) and acknowledges it in writing. Keep the records.</span></div></div>
+      <div class="duty-item"><div><strong>Contracts carry compliance</strong><span>FTC-compliance clause plus the approved-claims annex in every agreement.</span></div></div>
+      <div class="duty-item"><div><strong>One approved claims list</strong><span>Canonical, versioned, exact language with qualifiers. Creators quote verbatim or don't use it.</span></div></div>
+      <div class="duty-item"><div><strong>Monitor for real</strong><span>Monthly spot-checks of tagged content, minimum. Unenforced guidelines count against us in an investigation.</span></div></div>
+      <div class="duty-item"><div><strong>Fix fast, log everything</strong><span>Non-compliant post → correction request → confirmed within 48h → documented. Repeat offenders paused or terminated, documented.</span></div></div>
+      <div class="duty-item"><div><strong>Disclosure at the first touchpoint</strong><span>No "door-opener" content — a post that looks like an impartial review can't push the disclosure to the landing page it links to.</span></div></div>
+    </div>
+  </section>
+
+  <section id="reviews">
+    <p class="eyebrow">Part six</p>
+    <h2>Reviews (the 2024 Reviews Rule)</h2>
+    <p class="section-intro">Civil penalties run ~$50k+ per violation, and this rule reaches marketing ops directly:</p>
+    <ul class="plain">
+      <li><strong>Never</strong> pay for, or condition anything on, a positive review — including "leave a review to stay in the program."</li>
+      <li><strong>Never</strong> create, buy, or seed fake or AI-generated reviews.</li>
+      <li><strong>Never</strong> suppress or filter out negative reviews on our own site while presenting the set as complete.</li>
+      <li>Product-seeding programs that invite retail reviews must bake the disclosure into the ask.</li>
+      <li>Insider reviews (employees, family) without a disclosed relationship are violations — see below.</li>
+    </ul>
+  </section>
+
+  <section id="employees">
+    <p class="eyebrow">Part seven</p>
+    <h2>Employees &amp; family</h2>
+    <ul class="plain">
+      <li>Any employee — or their immediate family — posting about Freestyle discloses the employment relationship, every time ("I work at Freestyle" / "my partner works at Freestyle").</li>
+      <li>Employees and immediate family never post retail-site reviews of Freestyle products. At all.</li>
+      <li>Employee posts follow the same claim rules as everything else in this rulebook.</li>
+    </ul>
+    <div class="note"><strong>If we ever buy broadcast:</strong> radio/TV spots and host-read endorsements trigger FCC sponsorship-identification rules on top of everything here — loop in legal before booking.</div>
+  </section>
+
+  <section id="worry">
+    <p class="eyebrow">Part eight</p>
+    <h2>The worry list, ranked</h2>
+    <ol class="worry">
+      <li><strong>Comparative absorbency claims</strong> — the most likely NAD challenge from P&amp;G/Kimberly-Clark. Substantiation file airtight and current, always.</li>
+      <li><strong>Rash-language drift</strong> — "keeps skin dry" becoming "cured the rash" in creator captions. FDA drug-claim line.</li>
+      <li><strong>"Free of allergens"/hypoallergenic exposure</strong> — class-action bait on any composition change.</li>
+      <li><strong>Undisclosed gifting &amp; affiliate links</strong> — the highest-volume failure; creators assume free product doesn't count. It does.</li>
+      <li><strong>Eco-claim creep</strong> — "sustainable"/"biodegradable" sneaking into captions or our own social copy.</li>
+      <li><strong>Reviews Rule slip-ups</strong> — incentivized or insider reviews without disclosure.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>Internal only — not legal advice; validate final claim language and the program with advertising counsel. Full citations and case detail live in the internal regulatory brief (compliance/freestyle-ad-claims-legal-brief.md in the repo).</p>
+    <p>Key authorities: FTC Act §5 · Endorsement Guides (16 CFR 255, rev. 2023) · Consumer Reviews &amp; Testimonials Rule (16 CFR 465, 2024) · Green Guides (16 CFR 260) · FDA OTC Skin Protectant Monograph M016 · NAD v. Coterie (2025) · FTC v. gDiapers (2014).</p>
+  </footer>
+</div>
+
+</body>
+</html>

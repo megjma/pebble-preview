@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freestyle × Growi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+  :root {
+    --paper: #F7F3EC;
+    --card: #FFFFFF;
+    --ink: #222B24;
+    --ink-soft: #5C665E;
+    --line: #E2DACC;
+    --accent: #E8622C;
+    --accent-soft: #FBEAE0;
+    --bamboo: #3E8E5F;
+    --bamboo-bg: #EAF3EC;
+    --note-bg: #F1EDE3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #191E1A;
+      --card: #222823;
+      --ink: #ECEAE2;
+      --ink-soft: #A6ADA5;
+      --line: #38403A;
+      --accent: #F07A45;
+      --accent-soft: #35281F;
+      --bamboo: #66B287;
+      --bamboo-bg: #23301F;
+      --note-bg: #262C25;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #191E1A;
+    --card: #222823;
+    --ink: #ECEAE2;
+    --ink-soft: #A6ADA5;
+    --line: #38403A;
+    --accent: #F07A45;
+    --accent-soft: #35281F;
+    --bamboo: #66B287;
+    --bamboo-bg: #23301F;
+    --note-bg: #262C25;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Figtree', 'Avenir Next', 'Segoe UI', sans-serif;
+    font-size: 16.5px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 90px; }
+  h1, h2, h3 { font-family: 'Bricolage Grotesque', 'Figtree', sans-serif; text-wrap: balance; }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+  .brand .dot {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bamboo); color: #fff;
+    display: grid; place-items: center; font-size: 17px; flex: none;
+  }
+  .brand span { font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; color: var(--ink-soft); }
+  h1 { font-size: clamp(32px, 6vw, 46px); font-weight: 800; line-height: 1.06; margin: 0 0 14px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: 18px; color: var(--ink-soft); max-width: 60ch; margin: 0 0 24px; }
+
+  .tldr {
+    background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: 14px; padding: 18px 22px; margin-bottom: 8px;
+  }
+  .tldr .tag { font-weight: 800; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .tldr p { margin: 6px 0 0; font-size: 16.5px; }
+
+  section { margin-top: 50px; }
+  .eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  h2 { font-size: 26px; font-weight: 700; margin: 0 0 10px; }
+  h3 { font-size: 17.5px; font-weight: 700; margin: 22px 0 8px; }
+  .section-intro { color: var(--ink-soft); margin: 0 0 16px; max-width: 62ch; }
+  p { max-width: 66ch; }
+  ul.plain { padding-left: 20px; margin: 8px 0; }
+  ul.plain li { margin: 7px 0; }
+
+  .benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  @media (max-width: 600px) { .benefits { grid-template-columns: 1fr; } }
+  .benefit { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 17px; font-size: 15px; }
+  .benefit strong { display: block; font-size: 15.5px; margin-bottom: 3px; }
+  .benefit span { color: var(--ink-soft); font-size: 14.5px; }
+  .benefit.lead { grid-column: 1 / -1; background: var(--bamboo-bg); border-left: 4px solid var(--bamboo); }
+
+  .table-scroll { overflow-x: auto; margin: 14px 0 6px; }
+  table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: 15px; background: var(--card); border-radius: 12px; overflow: hidden; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); background: var(--note-bg); }
+  tr:last-child td { border-bottom: none; }
+  td.num { text-align: right; white-space: nowrap; font-weight: 700; }
+  tr.total td { background: var(--accent-soft); font-weight: 700; }
+
+  .note { background: var(--note-bg); border-radius: 12px; padding: 13px 18px; margin: 16px 0; font-size: 14.5px; color: var(--ink-soft); }
+  .note strong { color: var(--accent); }
+
+  .guard { display: grid; gap: 10px; margin-top: 14px; }
+  .guard-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: 15px;
+  }
+  .guard-item::before { content: "🛡️"; font-size: 15px; margin-top: 1px; }
+  .guard-item strong { display: block; font-size: 15.5px; }
+  .guard-item span { color: var(--ink-soft); font-size: 14.5px; }
+
+  ol.decide { margin: 12px 0 0; padding-left: 24px; }
+  ol.decide li { margin: 9px 0; }
+  ol.decide li::marker { font-weight: 800; color: var(--accent); }
+
+  footer { margin-top: 46px; font-size: 13px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 18px; }
+  footer p { max-width: none; margin: 6px 0; }
+</style>
+</head>
+<body>
+<nav style="display:flex; gap:22px; justify-content:center; padding:12px 16px; border-bottom:1px solid var(--line); font-family: 'Figtree', sans-serif; font-size:13.5px; letter-spacing:.04em; text-transform:uppercase; background: var(--card);"><span style="font-weight:700; color: var(--accent);">Proposal</span><a href="rulebook.html" style="color: var(--ink-soft); text-decoration: none; font-weight:600;">Rulebook</a><a href="contract-blueprint.html" style="color: var(--ink-soft); text-decoration: none; font-weight:600;">Contract Blueprint</a></nav>
+
+<div class="wrap">
+  <div class="brand"><div class="dot">🌱</div><span>Freestyle · Internal Proposal</span></div>
+  <h1>A Creator Program on <em>Growi</em></h1>
+  <p class="lede">Proposal: a 90-day nano/micro creator flood on TikTok and Instagram, run through Growi, built on own-voice content — real parents telling their real Freestyle story in their own words.</p>
+
+  <div class="tldr">
+    <span class="tag">TL;DR</span>
+    <p>For roughly <strong>$5,900 in fixed costs</strong> plus sales-funded commissions, we recruit ~125 nano/micro parent creators (2–10k followers) with no posting quotas — gift + commission energy — netting ~80–100 active posters and <strong>200–300 pieces of real in-use content</strong> per quarter (unboxings don't count). The play is content volume, not reach: we harvest the best-performing posts as ad creative — the model where peer brands like Needed report their best ads coming from sub-5k creators. Guardrails already built.</p>
+  </div>
+
+  <section>
+    <p class="eyebrow">The idea</p>
+    <h2>What we'd run</h2>
+    <ul class="plain">
+      <li><strong>Platforms:</strong> TikTok + Instagram (Reels and Stories) — where parents actually discover diaper brands.</li>
+      <li><strong>Creators:</strong> recruit ~125 nano/micro parent creators (2–10k followers) in two cohorts, to net ~80–100 active posters. Small accounts are the point: highest engagement rates on the platform, the most "real mom next door" energy, gift-tier economics — and the tier where peer brands (Needed among them) report their best-performing ad creative originating, often from sub-5k accounts.</li>
+      <li><strong>The deal per creator — the hybrid model:</strong> gifted product + affiliate commission, and <strong>no posting quota</strong>. Posting is voluntary; what keeps the roster honest is that staying in the program (and receiving the next product drop) requires at least one published post showing real product use — posting matters, sentiment never does. On top of commission, a <strong>rotating monthly bonus</strong> (volume, engagement, or conversion — e.g., "$50 for 3 in-use videos this month," "$100 if a post clears 25k views") keeps the middle of the roster producing; every bonus keys off behavior and metrics, never sentiment. Over-recruiting (~125 to net ~100) is cheaper than enforcement at ~$40 a creator.</li>
+      <li><strong>The content — in use, not unboxed:</strong> their own words, their own style — no scripts, no brand-supplied claims. The brief asks for product-in-life content: overnight tests, changing-table routines, diaper-bag reality, sensitive-skin journeys. <strong>Unboxing/haul videos don't count</strong> toward roster activity or any program metric — they're the lowest-converting creator format and unusable as ad creative. Own-voice is deliberate: it performs better <em>and</em> is the legally safest category (personal experience needs no substantiation file).</li>
+      <li><strong>The funnel math:</strong> ~125 recruited × ~60–70% posting (the post-to-stay mechanic plus commission incentives) ≈ 80–100 active creators averaging 2–3 in-use pieces over the quarter → <strong>~200–300 total pieces, all voluntary</strong>. The original videos among them (~150+) are the ad-asset pool; Stories build awareness but mostly aren't licensable creative. Extra volume comes from re-upping the best performers with a second product drop, not from quotas.</li>
+      <li><strong>Duration:</strong> 90-day pilot, then a go/grow/kill decision on the data — including which follower tier actually produced the winning creative.</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">Why</p>
+    <h2>What we get out of it</h2>
+    <div class="benefits">
+      <div class="benefit lead"><strong>An ad-creative factory, not an influencer campaign</strong><span>Every deliverable comes with a repost license, with paid-usage (whitelisting/Spark Ads) as a cheap upgrade for winners — and at the 2–10k tier, licensing is far cheaper than with bigger creators. 300–450 authentic pieces per quarter (~200+ original videos) is a full creative-testing pipeline: we find what converts organically, then put media dollars only behind proven content. This is exactly the model behind Needed-style results, where sub-5k creators produced the best ads.</span></div>
+      <div class="benefit"><strong>Awareness where parents shop</strong><span>Reach into dozens of trusted parent audiences on TikTok/IG — the discovery channel for DTC baby brands.</span></div>
+      <div class="benefit"><strong>Social proof at scale</strong><span>Dozens of real families visibly using Freestyle — the trust layer every paid campaign benefits from.</span></div>
+      <div class="benefit"><strong>Performance data, not vibes</strong><span>Growi tracks every creator's clicks and attributed sales, so we learn which creators, angles, and hooks actually convert.</span></div>
+      <div class="benefit"><strong>An always-on affiliate arm</strong><span>Commission structure means the program keeps selling after the pilot — costs scale only with revenue.</span></div>
+      <div class="benefit"><strong>An ambassador bench</strong><span>The pilot surfaces the 5–10 creators worth deeper retainers and exclusivity later.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">The numbers</p>
+    <h2>90-day pilot budget</h2>
+    <div class="table-scroll">
+      <table>
+        <tr><th>Line item</th><th>Basis</th><th>Cost</th></tr>
+        <tr><td>Growi platform</td><td>Premium plan, $299/mo × 3 — caps at 50 <em>active</em> creators, so we run two cohorts (months 1–2 and 2–3), or get their custom tier quoted</td><td class="num">~$900</td></tr>
+        <tr><td>Product + shipping</td><td>~$40 per creator × 125 recruited (over-recruiting to net ~100 posters is the cost of the no-quota model)</td><td class="num">~$5,000</td></tr>
+        <tr class="total"><td>Fixed pilot cost</td><td></td><td class="num">~$5,900</td></tr>
+        <tr><td>Commissions</td><td>15–20% of attributed net sales — paid only when we sell</td><td class="num">self-funding</td></tr>
+        <tr><td>Bonus budget</td><td>Rotating monthly bonuses — volume ($50–75 for 3+ in-use videos), engagement leaderboards ($100 × top 10), conversion milestones, product perks. Every earned bonus is paid; cost is bounded by offer design (fixed-payout contests + worst-case-sized open offers), not a cap</td><td class="num">$1,500–3,000 est.</td></tr>
+        <tr><td>Paid usage (optional)</td><td>License top 10–15 posts for ads: ~$100–300 each at this creator tier</td><td class="num">$1,500–4,500</td></tr>
+        <tr><td>Team time</td><td>~5–6 hrs/week: creator approvals, sample-based spot-checks, correction follow-ups</td><td class="num">internal</td></tr>
+      </table>
+    </div>
+    <div class="note"><strong>Estimates to verify:</strong> Growi pricing is from their published plans (Standard $149/mo for up to 20 active creators; Premium $299/mo for up to 50) — the key demo-call question for a 100-creator flood is how "active creators" is counted and whether cohort cycling works or the custom Enterprise tier is needed. Product cost assumes one box + wipes per creator; commission rate is ours to set in Growi.</div>
+    <p>For comparison: a single professionally produced ad shoot typically runs $5k–20k for a handful of assets. This pilot's entire fixed cost buys ~150–200 pieces with attribution data attached — a cost per usable ad asset in the low hundreds of dollars, versus thousands for produced content.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Protection</p>
+    <h2>The guardrails (already built)</h2>
+    <p class="section-intro">The FTC holds the <em>brand</em> liable for creator content, so the program ships with a compliance stack — all drafted and ready:</p>
+    <div class="guard">
+      <div class="guard-item"><div><strong>Contract with built-in acknowledgment</strong><span>Our creator agreement template goes into Growi's e-sign flow with the "3 Rules" guidelines attached as Exhibit A — the signature is the FTC-expected written acknowledgment, no extra process.</span></div></div>
+      <div class="guard-item"><div><strong>Disclosure on every post</strong><span>#ad (or equivalent) at the top of every caption, spoken in the first seconds of video — contractually required, and the platform paid-partnership tools on top.</span></div></div>
+      <div class="guard-item"><div><strong>Own words, no claims</strong><span>Creators share only their real experience. No statistics, no "prevents rash," no "hypoallergenic/chemical-free/biodegradable," no competitor comparisons — a short danger-words list, not a script. Our campaign briefs deliberately contain no product stats, so there's nothing to misquote.</span></div></div>
+      <div class="guard-item"><div><strong>48-hour correction clause</strong><span>Non-compliant post → we request a fix → confirmed within 48 hours → logged. Repeat issues end the partnership.</span></div></div>
+      <div class="guard-item"><div><strong>Sample-based spot-checks, scaled for volume</strong><span>With ~100 creators we review a rotating sample (~25%/month, every creator at least once during the pilot) — the enforcement evidence regulators look for, kept proportionate. Worth noting: nano creators are the least familiar with FTC rules of any tier, which is exactly why the 3 Rules brief and the e-signed acknowledgment do the heavy lifting at onboarding.</span></div></div>
+      <div class="guard-item"><div><strong>Reviews Rule hygiene</strong><span>Nothing is ever conditioned on positive sentiment, and no retail-site reviews in exchange for product — keeping the FTC's ~$50k-per-violation reviews rule fully away from us.</span></div></div>
+    </div>
+    <p style="margin-top: 14px;">Supporting docs, all drafted: <a href="rulebook.html" style="color: var(--accent); font-weight: 700;">The Freestyle Rulebook</a> (every internal rule — claims, danger words, who owns what, the team workflow) and <a href="contract-blueprint.html" style="color: var(--accent); font-weight: 700;">The Contract Blueprint</a> (what the Growi agreement must cover + the compensation and bonus structure, ready for legal). The creator-facing guidelines aren't a separate handout — they attach to every Growi contract as the exhibit each creator e-signs. Counsel review of the contract terms is the one outstanding to-do before the first signature.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Measuring it</p>
+    <h2>What success looks like at day 90</h2>
+    <ul class="plain">
+      <li><strong>Content:</strong> 200+ published in-use deliverables (150+ original videos) — unboxings excluded from every count; 15–25 assets licensed into paid testing.</li>
+      <li><strong>Ad performance:</strong> the headline metric for this model — CTR/CPA of creator-sourced ads vs. our current creative in the same placements. This is where the Needed-style thesis gets proven or disproven with our own data.</li>
+      <li><strong>Performance:</strong> attributed revenue vs. commission paid; cost per usable ad asset vs. produced-content benchmark; post rate (target ≥60% of recruited creators publishing at least one in-use piece).</li>
+      <li><strong>Efficiency:</strong> which follower band (2–5k vs. 5–10k) and content angle drives the best creative — the input for the scale-up cohort.</li>
+      <li><strong>Compliance:</strong> zero uncorrected disclosure misses (spot-check log as evidence).</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">To discuss</p>
+    <h2>Decisions we need together</h2>
+    <ol class="decide">
+      <li><strong>Budget sign-off</strong> — ~$5,900 fixed + commission rate (proposal: 15%) + the monthly bonus budget (~$500–1,000/mo, controlled by offer design since every earned bonus must be paid) + whether to reserve the paid-usage budget now or decide at day 45.</li>
+      <li><strong>Cohorts vs. custom tier</strong> — run two ~50-creator cohorts on Premium ($299/mo), or get Growi's Enterprise tier quoted for 100 concurrent? Recommendation: ask both on the demo call; cohorts also stagger the shipping and review workload.</li>
+      <li><strong>Usage-rights default</strong> — 12-month organic repost is in the contract template; at this creator tier, consider pre-negotiating a flat paid-usage rate (e.g., $150–250) in every contract so licensing winners is one click, not 15 negotiations.</li>
+      <li><strong>Who runs it</strong> — owner for creator approvals, the rotating spot-check, and the 48-hour correction loop; at 100 creators this is a real weekly responsibility.</li>
+      <li><strong>Counsel review</strong> — one-time review of the contract template before the first signature.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>Prepared September 2026. Cost figures are estimates pending a Growi demo/pricing confirmation; compliance framework summarized from the Freestyle Rulebook. Not legal advice.</p>
+  </footer>
+</div>
+
+</body>
+</html>

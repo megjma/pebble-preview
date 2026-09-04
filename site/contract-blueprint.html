@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freestyle Contract Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+  :root {
+    --paper: #F7F3EC;
+    --card: #FFFFFF;
+    --ink: #222B24;
+    --ink-soft: #5C665E;
+    --line: #E2DACC;
+    --accent: #E8622C;
+    --accent-soft: #FBEAE0;
+    --bamboo: #3E8E5F;
+    --bamboo-bg: #EAF3EC;
+    --no: #B3392F;
+    --no-bg: #F9ECE9;
+    --note-bg: #F1EDE3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #191E1A;
+      --card: #222823;
+      --ink: #ECEAE2;
+      --ink-soft: #A6ADA5;
+      --line: #38403A;
+      --accent: #F07A45;
+      --accent-soft: #35281F;
+      --bamboo: #66B287;
+      --bamboo-bg: #23301F;
+      --no: #E08175;
+      --no-bg: #362321;
+      --note-bg: #262C25;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #191E1A;
+    --card: #222823;
+    --ink: #ECEAE2;
+    --ink-soft: #A6ADA5;
+    --line: #38403A;
+    --accent: #F07A45;
+    --accent-soft: #35281F;
+    --bamboo: #66B287;
+    --bamboo-bg: #23301F;
+    --no: #E08175;
+    --no-bg: #362321;
+    --note-bg: #262C25;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Figtree', 'Avenir Next', 'Segoe UI', sans-serif;
+    font-size: 16.5px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 90px; }
+  h1, h2, h3 { font-family: 'Bricolage Grotesque', 'Figtree', sans-serif; text-wrap: balance; }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+  .brand .dot {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--bamboo); color: #fff;
+    display: grid; place-items: center; font-size: 17px; flex: none;
+  }
+  .brand span { font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; color: var(--ink-soft); }
+  h1 { font-size: clamp(32px, 6vw, 46px); font-weight: 800; line-height: 1.06; margin: 0 0 14px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: 18px; color: var(--ink-soft); max-width: 60ch; margin: 0 0 20px; }
+  .banner {
+    background: var(--accent-soft); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 18px; font-size: 15px; margin-bottom: 8px;
+  }
+  .banner strong { color: var(--accent); }
+
+  section { margin-top: 48px; }
+  .eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  h2 { font-size: 26px; font-weight: 700; margin: 0 0 10px; }
+  .section-intro { color: var(--ink-soft); margin: 0 0 16px; max-width: 62ch; }
+  p { max-width: 66ch; }
+  ul.plain { padding-left: 20px; margin: 8px 0; }
+  ul.plain li { margin: 7px 0; }
+
+  .clause {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 15px 20px 13px; margin: 12px 0;
+  }
+  .clause h3 { margin: 0 0 6px; font-size: 16.5px; display: flex; gap: 10px; align-items: baseline; }
+  .clause h3 .n { color: var(--accent); font-weight: 800; font-size: 14px; }
+  .clause p { margin: 4px 0; font-size: 15px; }
+  .clause .why { color: var(--ink-soft); font-size: 14px; }
+  .clause .why b { color: var(--accent); font-weight: 700; }
+
+  .comp { border-radius: 14px; border: 1px solid var(--line); overflow: hidden; margin-top: 14px; }
+  .comp .row { display: grid; grid-template-columns: 170px 1fr; border-bottom: 1px solid var(--line); background: var(--card); }
+  .comp .row:last-child { border-bottom: none; }
+  .comp .k { padding: 12px 16px; font-weight: 700; font-size: 14.5px; background: var(--note-bg); }
+  .comp .v { padding: 12px 16px; font-size: 15px; }
+  .comp .v span { color: var(--ink-soft); font-size: 14px; display: block; }
+  @media (max-width: 540px) { .comp .row { grid-template-columns: 1fr; } .comp .k { padding-bottom: 2px; } }
+
+  .never { background: var(--no-bg); border: 1px solid var(--line); border-left: 4px solid var(--no); border-radius: 12px; padding: 14px 18px; margin-top: 16px; font-size: 15px; }
+  .never .tag { font-weight: 800; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--no); display: block; margin-bottom: 4px; }
+  .never ul { margin: 4px 0 0; padding-left: 20px; }
+  .never li { margin: 4px 0; }
+  .never li::marker { color: var(--no); }
+
+  .note { background: var(--note-bg); border-radius: 12px; padding: 13px 18px; margin: 16px 0; font-size: 14.5px; }
+  .note strong { color: var(--accent); }
+  ol.legal { margin: 12px 0 0; padding-left: 24px; }
+  ol.legal li { margin: 8px 0; }
+  ol.legal li::marker { font-weight: 800; color: var(--accent); }
+  footer { margin-top: 46px; font-size: 13px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 18px; }
+</style>
+</head>
+<body>
+<nav style="display:flex; gap:22px; justify-content:center; padding:12px 16px; border-bottom:1px solid var(--line); font-family: 'Figtree', sans-serif; font-size:13.5px; letter-spacing:.04em; text-transform:uppercase; background: var(--card);"><a href="index.html" style="color: var(--ink-soft); text-decoration: none; font-weight:600;">Proposal</a><a href="rulebook.html" style="color: var(--ink-soft); text-decoration: none; font-weight:600;">Rulebook</a><span style="font-weight:700; color: var(--accent);">Contract Blueprint</span></nav>
+
+<div class="wrap">
+  <div class="brand"><div class="dot">✍️</div><span>Freestyle · Internal — Program Setup</span></div>
+  <h1>The Contract <em>Blueprint</em></h1>
+  <p class="lede">What the Freestyle creator agreement needs to cover, and what compensation should look like — guidelines for the team setting up contracts in Growi, and the spec to hand your legal team.</p>
+  <div class="banner"><strong>This is not a contract.</strong> It's the requirements list. Legal drafts (or approves) the actual language before the first creator signs; Growi then handles e-signature, payment structure, and records.</div>
+
+  <section>
+    <p class="eyebrow">Part one</p>
+    <h2>What the contract must cover</h2>
+    <p class="section-intro">Ten things, each with the reason it's there — so nothing gets negotiated away without knowing what it protects.</p>
+
+    <div class="clause"><h3><span class="n">01</span>No posting quota — the hybrid model</h3>
+      <p>State plainly that there's no minimum posting requirement; creators post if and when they want. Staying on the active roster for future product drops requires at least one published post showing <em>real product use</em> — and an unboxing alone doesn't qualify.</p>
+      <p class="why"><b>Why:</b> keeps the gift-energy program creators actually join, while the "post to stay" mechanic protects volume. Critical drafting rule: the qualifying post must be defined by <b>use, never sentiment</b> — requiring a post is legal; requiring a favorable post violates the FTC Reviews Rule.</p></div>
+
+    <div class="clause"><h3><span class="n">02</span>Compensation never tied to sentiment</h3>
+      <p>An explicit line that no compensation, perk, or roster status depends on what the creator says or how positively they say it.</p>
+      <p class="why"><b>Why:</b> this sentence is the Reviews Rule shield (~$50k+ per violation) and it also documents the own-voice program design.</p></div>
+
+    <div class="clause"><h3><span class="n">03</span>FTC disclosure obligation</h3>
+      <p>Disclosure on every post: plain language (#ad / "Freestyle sent me these" / "I earn a commission from my link") at the top of the caption, spoken in the first seconds of video plus on-screen text, and the platform's paid-partnership tool on top. Free product or commission eligibility alone triggers it.</p>
+      <p class="why"><b>Why:</b> the brand is liable for creator non-disclosure; the contract makes the duty explicit and enforceable.</p></div>
+
+    <div class="clause"><h3><span class="n">04</span>Content standards + the 3 Rules as a signed exhibit</h3>
+      <p>The danger-words list in contract form (no prevents/treats/cures, hypoallergenic, chemical-free, non-toxic, biodegradable/eco terms, flushable, safest, guaranteed, expert endorsements, statistics, or named-competitor comparisons) — and the "3 Rules" creator brief attached as an exhibit the signature acknowledges.</p>
+      <p class="why"><b>Why:</b> the e-signature then doubles as the written guideline acknowledgment the FTC expects from a real compliance program — zero extra process.</p></div>
+
+    <div class="clause"><h3><span class="n">05</span>Correction window</h3>
+      <p>If we flag a post as non-compliant (disclosure or danger words), the creator fixes or removes it within 48 hours; repeat issues end the partnership.</p>
+      <p class="why"><b>Why:</b> the enforcement mechanism regulators look for, agreed to upfront instead of argued about later.</p></div>
+
+    <div class="clause"><h3><span class="n">06</span>Retail review ban</h3>
+      <p>No ratings or reviews on retail platforms (Amazon, Target.com, etc.) in connection with the partnership, unless the platform permits incentivized reviews and the review discloses the free product.</p>
+      <p class="why"><b>Why:</b> incentivized retail reviews are the Reviews Rule's core target.</p></div>
+
+    <div class="clause"><h3><span class="n">07</span>Usage rights — the whole point of the program</h3>
+      <p>A non-exclusive license for Freestyle to repost deliverables on its own organic channels (with credit) for a set window — 12 months is a fair default. Pre-negotiate a <em>flat paid-usage rate</em> in the same contract (see compensation) so licensing a winner into ads is one click, not a negotiation. Creator keeps ownership; we can't edit content in ways that change its meaning.</p>
+      <p class="why"><b>Why:</b> without signed usage rights, every great video requires chasing the creator for permission before it can become an ad — the ad-creative harvest depends on this clause.</p></div>
+
+    <div class="clause"><h3><span class="n">08</span>Independent contractor, non-exclusive</h3>
+      <p>Creators are contractors, not employees or agents; the deal is non-exclusive (with an optional short category-exclusivity window around each post if we ever want it).</p>
+      <p class="why"><b>Why:</b> avoids employment-law exposure and keeps the offer light enough for nanos to sign.</p></div>
+
+    <div class="clause"><h3><span class="n">09</span>Term, termination, and survival</h3>
+      <p>Either side can walk away on written notice (a Growi message counts). Earned commissions stay payable; disclosure duties and usage rights survive for content already published.</p>
+      <p class="why"><b>Why:</b> "survival" is the piece teams forget — without it, a creator who quits could demand their content pulled from your ads.</p></div>
+
+    <div class="clause"><h3><span class="n">10</span>Original work &amp; consent</h3>
+      <p>Content is the creator's original work, doesn't infringe third-party rights (music licensing per platform rules matters most), and everyone appearing has consented — with the creator consenting on behalf of their own minor children.</p>
+      <p class="why"><b>Why:</b> the babies are the content; publicity/consent language for minors is a must-ask for legal (see below).</p></div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Part two</p>
+    <h2>What compensation should look like</h2>
+    <div class="comp">
+      <div class="row"><div class="k">The gift</div><div class="v">One product drop (~$40 diapers + wipes) per cohort, no strings.<span>Re-up drops go to creators who posted at least one in-use piece — the roster mechanic, not an obligation.</span></div></div>
+      <div class="row"><div class="k">Commission</div><div class="v">15% of attributed net sales to start (room to raise to 20% for proven performers), tracked link/code, paid monthly through Growi.<span>Commission is the engine that makes voluntary posting happen — it needs no quota to work.</span></div></div>
+      <div class="row"><div class="k">Flat fees</div><div class="v">None at the 2–10k tier.<span>Product + commission is the market-standard offer here; fees enter later for retainer-level ambassadors only.</span></div></div>
+      <div class="row"><div class="k">Paid usage</div><div class="v">Pre-negotiated flat rate of $150–250 per asset licensed into ads (whitelisting/Spark Ads), baked into every contract.<span>Turns "can we run this as an ad?" into a payment, not a negotiation — and at this tier it's a thrilling bonus for the creator.</span></div></div>
+      <div class="row"><div class="k">Rotating bonuses</div><div class="v">One or two active bonuses each month/quarter, announced in Growi and rotated to keep the program fresh — the volume-and-quality engine (menu below).<span>Every bonus keys off behavior or metrics, never sentiment.</span></div></div>
+    </div>
+
+    <div class="clause" style="margin-top:16px"><h3><span class="n">★</span>The rotating bonus menu</h3>
+      <p>Pick 1–2 per period and publish the terms in Growi before the period starts. <strong>Every earned bonus gets paid, always</strong> — there's no "pool cap" that can void an earned offer. Cost is controlled by structure instead: use fixed-payout formats (contests, leaderboards, creator of the month) for the bigger dollars, size open offers so the worst case is affordable (e.g., $50 × 100 creators = $5,000 absolute ceiling — budget on worst case × realistic hit rate), and tune next month's offer if one over-performs. Never change terms mid-period. Numbers below are starting points:</p>
+      <ul class="plain" style="font-size:15px">
+        <li><strong>Volume bonus:</strong> $50–75 for publishing 3+ qualifying videos (in-use, non-unboxing) in the month.</li>
+        <li><strong>Engagement bonus:</strong> $100 to the top 10 qualifying posts by engagement rate for follower size (a leaderboard — fixed payout by design, and the fairer bar for nanos than a flat views number).</li>
+        <li><strong>Conversion bonus:</strong> commission bumps to 20% (or a flat $) past a GMV milestone — Growi automates these thresholds natively.</li>
+        <li><strong>Product perks:</strong> an extra or upsized product drop for a 2–3 month posting streak; first access to new products for the most consistent posters.</li>
+        <li><strong>Creator of the month:</strong> $150–250 + a feature on Freestyle's channels, selected on objective performance (views, saves, attributed sales) — never on how flattering the content was.</li>
+      </ul>
+      <p class="why"><b>Why rotate:</b> a fresh bonus each period re-engages the quiet middle of the roster (the enthusiasts post anyway); publishing terms upfront in Growi keeps every bonus a documented, sentiment-neutral offer. Two compliance notes for whoever writes each month's bonus: (1) qualify posts by <b>format and use</b> (video, product in use), never by tone — "3 great posts about how much you love Freestyle" is an illegal incentive, "3 videos showing Freestyle in use" is a clean one; (2) bonuses are compensation, so the disclosure duty on every post is unchanged.</p>
+      <p class="why"><b>The pre-publish ritual:</b> before any bonus goes live, do the 30-second worst-case math — "$50 for 3 videos" × 100-creator roster = $5,000 absolute ceiling, realistically $1,000–1,500 at a 20–30% hit rate. If the ceiling would hurt, restructure as a top-N contest <em>before</em> publishing; never shrink a promise after the fact. And keep the safety valve in mind: if a volume bonus blows past forecast, we got flooded with in-use videos at ~$17–25 apiece — the cheapest content acquisition in the entire program, not a budget failure.</p></div>
+    <div class="never">
+      <span class="tag">Compensation must never</span>
+      <ul>
+        <li>Be conditioned on positive sentiment, a good review, or "loving it" — in the contract, in Growi settings, or in any DM to a creator</li>
+        <li>Pay for retail-site reviews</li>
+        <li>Penalize a creator for honest, less-than-glowing content (not posting is fine; punishing candor is not)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Part three</p>
+    <h2>Setup mechanics in Growi</h2>
+    <ul class="plain">
+      <li>Build one <strong>contract template</strong> in Growi's contract flow with the legal-approved terms; per-campaign fields (commission %, usage window, product list) live in the campaign/brief.</li>
+      <li>Attach the <strong>3 Rules brief as the exhibit</strong> so every e-signature is a recorded guideline acknowledgment.</li>
+      <li>Keep the <strong>campaign brief free of product statistics</strong> — briefs describe experiences to explore (overnight dryness, routines), never claims, so there's nothing to paraphrase.</li>
+      <li>Export/retain the signed-contract records — that archive is the compliance paper trail.</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="eyebrow">Part four</p>
+    <h2>Questions for the legal team</h2>
+    <p class="section-intro">Hand this whole page over, and specifically ask them to nail down:</p>
+    <ol class="legal">
+      <li><strong>Minors on camera</strong> — the right consent/publicity language for creators' children appearing in content we later run as ads, state by state.</li>
+      <li><strong>License scope</strong> — exact wording for the organic repost license vs. the paid-usage license (placements, edit rights, duration, revocability).</li>
+      <li><strong>Governing law and venue</strong> — plus whether we accept international creators (tax forms and FTC-equivalent rules abroad).</li>
+      <li><strong>The post-to-stay mechanic</strong> — confirm our sentiment-neutral wording sits safely inside the FTC Reviews Rule.</li>
+      <li><strong>Termination and survival</strong> — that usage rights and disclosure duties survive for published content.</li>
+    </ol>
+  </section>
+
+  <footer>Internal guidelines — not legal advice and not a contract. Companion docs: the creator guidelines (the exhibit each creator e-signs in Growi), the Growi program proposal, and the Freestyle Rulebook.</footer>
+</div>
+
+</body>
+</html>
